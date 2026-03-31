@@ -1,7 +1,122 @@
+:root {
+  --honey: #f4b400;
+  --honey-soft: #ffe08a;
+  --bee-ink: #2a220f;
+  --bee-brown: #6f5a1e;
+  --paper: #fffdf6;
+  --line: #e6d9a5;
+  --shadow: rgba(84, 63, 8, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   text-align: center;
-  margin-top: 50px;
+  margin: 0;
+  min-height: 100vh;
+  padding: 48px 20px 56px;
+  color: var(--bee-ink);
+  background:
+    radial-gradient(circle at top, rgba(255, 230, 141, 0.45), transparent 34%),
+    linear-gradient(180deg, #fff7d6 0%, var(--paper) 48%, #fffdf8 100%);
+}
+
+h1,
+h2 {
+  margin: 0 0 18px;
+  color: var(--bee-ink);
+}
+
+p {
+  color: var(--bee-brown);
+}
+
+a {
+  color: #8d6500;
+  font-weight: bold;
+}
+
+input,
+select {
+  display: block;
+  width: min(100%, 360px);
+  margin: 12px auto;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--bee-ink);
+  box-shadow: 0 8px 18px var(--shadow);
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid rgba(244, 180, 0, 0.35);
+  border-color: var(--honey);
+}
+
+button {
+  padding: 11px 18px;
+  margin: 10px 6px;
+  border: 1px solid #d8b453;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffd75a 0%, #f4b400 100%);
+  color: var(--bee-ink);
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 10px 22px var(--shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 24px rgba(84, 63, 8, 0.18);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+#options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#options button {
+  width: min(100%, 360px);
+}
+
+#status,
+#quizCode,
+#score,
+#points {
+  font-weight: bold;
+}
+
+#leaderboardSection {
+  width: min(100%, 420px);
+  margin: 20px auto 0;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 251, 232, 0.92);
+  box-shadow: 0 12px 24px var(--shadow);
+}
+
+#leaderboard {
+  text-align: left;
+  padding-left: 24px;
+}
+
+#leaderboard li {
+  margin: 8px 0;
+  color: var(--bee-ink);
 }
 
 .profile-card {
@@ -9,23 +124,24 @@ body {
   justify-content: center;
   align-items: center;
   gap: 16px;
-  width: fit-content;
+  width: min(100%, 420px);
   margin: 20px auto 30px;
-  padding: 14px 18px;
-  border: 1px solid #d8d8d8;
-  border-radius: 14px;
-  background: #fafafa;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 251, 232, 0.92);
+  box-shadow: 0 12px 24px var(--shadow);
 }
 
 .profile-avatar {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  background: #222;
-  color: #fff;
+  background: linear-gradient(180deg, #2b2412 0%, #15120a 100%);
+  color: #fff6d7;
   font-size: 22px;
   font-weight: bold;
 }
@@ -41,23 +157,12 @@ body {
 
 .profile-label {
   font-size: 13px;
-  color: #666;
+  color: var(--bee-brown);
 }
 
 .profile-email {
   font-weight: bold;
-}
-
-input {
-  display: block;
-  margin: 10px auto;
-  padding: 10px;
-}
-
-select {
-  display: block;
-  margin: 10px auto;
-  padding: 10px;
+  color: var(--bee-ink);
 }
 
 .option-row {
@@ -73,8 +178,8 @@ select {
 }
 
 .remove-option-button {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   padding: 0;
   margin: 0;
   font-size: 20px;
@@ -82,13 +187,7 @@ select {
 }
 
 .remove-option-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-button {
-  padding: 10px 20px;
-  margin: 10px;
+  opacity: 0.45;
 }
 
 .toggle-label {
@@ -97,8 +196,31 @@ button {
   align-items: center;
   gap: 8px;
   margin: 15px auto;
+  color: var(--bee-ink);
+  font-weight: bold;
 }
 
 .toggle-label input {
   margin: 0;
+  width: auto;
+  box-shadow: none;
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 32px 16px 40px;
+  }
+
+  .profile-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-details {
+    text-align: center;
+  }
+
+  .option-row {
+    gap: 6px;
+  }
 }
