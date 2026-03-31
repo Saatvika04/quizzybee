@@ -17,7 +17,6 @@
 <button onclick="goToCreateQuiz()">Create Quiz</button>
 <button onclick="goToJoinQuiz()">Join Quiz</button>
 <button onclick="goToAiQuiz()">AI Generated Quiz</button>
-<button onclick="startPracticeQuiz()">Practice Quiz</button>
 
 <button onclick="logout()">Logout</button>
 
@@ -27,7 +26,6 @@
 
 <script src="js/firebase.js"></script>
 <script src="js/session.js"></script>
-<script src="js/questions.js"></script>
 
 <script>
 function renderUserProfile(user) {
@@ -64,15 +62,6 @@ function goToJoinQuiz() {
 function goToAiQuiz() {
   resetQuizSession();
   window.location.href = "generateQuiz.html";
-}
-
-function startPracticeQuiz() {
-  localStorage.setItem("quizData", JSON.stringify(sampleQuestions));
-  localStorage.removeItem("quizTopic");
-  localStorage.removeItem("score");
-  localStorage.removeItem("quizCode");
-  localStorage.setItem("isGroupQuiz", "false");
-  window.location.href = "quiz.html";
 }
 
 function logout() {
