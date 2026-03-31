@@ -36,9 +36,14 @@ function normalizeQuestions(payload) {
   });
 }
 
+function generateCode() {
+  return Math.random().toString(36).substring(2, 8);
+}
+
 async function generateQuiz() {
   const topic = document.getElementById("topic").value.trim();
   const generateButton = document.getElementById("generateButton");
+  const isGroupQuiz = document.getElementById("groupQuizToggle").checked;
 
   if (!topic) {
     setStatus("Please enter a topic first.");
@@ -65,8 +70,31 @@ async function generateQuiz() {
 
     const questions = normalizeQuestions(payload);
 
+    if (isGroupQuiz) {
+      const code = generateCode();
+
+      await firebase.firestore().collection("quizzes").doc(code).set({
+        topic,
+        questions,
+        isGroupQuiz: true,
+        createdBy: localStorage.getItem("currentUserEmail") || "Unknown creator"
+      });
+
+      localStorage.setItem("quizCode", code);
+      localStorage.setItem("isGroupQuiz", "true");
+      localStorage.setItem("playerName", localStorage.getItem("currentUserEmail") || "Quiz Host");
+      alert(`Group quiz created. Share this code: ${code}`);
+    } else {
+      localStorage.removeItem("quizCode");
+      localStorage.setItem("isGroupQuiz", "false");
+      localStorage.removeItem("playerName");
+    }
+
     localStorage.setItem("quizData", JSON.stringify(questions));
     localStorage.removeItem("score");
+    localStorage.removeItem("totalPoints");
+    localStorage.removeItem("attemptDetails");
+    localStorage.removeItem("lastAttemptId");
     localStorage.setItem("quizTopic", topic);
     window.location.href = "quiz.html";
   } catch (error) {

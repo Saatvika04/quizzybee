@@ -5,6 +5,7 @@
 <h2>Join Quiz</h2>
 
 <input id="code" placeholder="Enter Quiz Code">
+<input id="playerName" placeholder="Enter your name for the leaderboard">
 <button onclick="joinQuiz()">Start Quiz</button>
 
 <!-- Firebase -->
@@ -21,7 +22,25 @@ function joinQuiz() {
   db.collection("quizzes").doc(code).get()
     .then(doc => {
       if (doc.exists) {
-        localStorage.setItem("quizData", JSON.stringify(doc.data().questions));
+        const quiz = doc.data();
+        const playerName = document.getElementById("playerName").value.trim();
+
+        if (quiz.isGroupQuiz && !playerName) {
+          alert("Please enter your name to join a group quiz.");
+          return;
+        }
+
+        localStorage.setItem("quizData", JSON.stringify(quiz.questions));
+        localStorage.setItem("quizCode", code);
+        localStorage.setItem("isGroupQuiz", String(Boolean(quiz.isGroupQuiz)));
+        localStorage.removeItem("score");
+        localStorage.removeItem("totalPoints");
+        localStorage.removeItem("attemptDetails");
+        localStorage.removeItem("lastAttemptId");
+        localStorage.setItem(
+          "playerName",
+          playerName || localStorage.getItem("currentUserEmail") || "Guest Player"
+        );
         window.location.href = "quiz.html";
       } else {
         alert("Invalid quiz code");

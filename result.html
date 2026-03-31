@@ -9,12 +9,68 @@
 <body>
   <h1>Your Score:</h1>
   <p id="score"></p>
+  <h2 id="pointsHeading" hidden>Total Points:</h2>
+  <p id="points" hidden></p>
+  <div id="leaderboardSection" hidden>
+    <h2>Leaderboard</h2>
+    <ol id="leaderboard"></ol>
+  </div>
   <button onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
 
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="js/firebase.js"></script>
   <script>
     const savedScore = localStorage.getItem("score");
     document.getElementById("score").innerText =
       savedScore !== null ? savedScore : "No score available";
+
+    const isGroupQuiz = localStorage.getItem("isGroupQuiz") === "true";
+    const totalPoints = localStorage.getItem("totalPoints");
+    const quizCode = localStorage.getItem("quizCode");
+    const lastAttemptId = localStorage.getItem("lastAttemptId");
+
+    if (isGroupQuiz) {
+      document.getElementById("pointsHeading").hidden = false;
+      document.getElementById("points").hidden = false;
+      document.getElementById("leaderboardSection").hidden = false;
+      document.getElementById("points").innerText =
+        totalPoints !== null ? totalPoints : "No points recorded";
+
+      if (quizCode) {
+        firebase.firestore()
+          .collection("quizzes")
+          .doc(quizCode)
+          .collection("attempts")
+          .get()
+          .then(snapshot => {
+            const leaderboard = document.getElementById("leaderboard");
+            leaderboard.innerHTML = "";
+            const attempts = snapshot.docs
+              .map(doc => ({ id: doc.id, ...doc.data() }))
+              .sort((a, b) => {
+                if (b.totalPoints !== a.totalPoints) {
+                  return b.totalPoints - a.totalPoints;
+                }
+
+                return a.totalTimeMs - b.totalTimeMs;
+              });
+
+            attempts.forEach(attempt => {
+              const isCurrentAttempt = attempt.id === lastAttemptId;
+              const item = document.createElement("li");
+              item.innerText =
+                `${attempt.playerName} - ${attempt.totalPoints} pts - ${Math.round(attempt.totalTimeMs / 1000)} sec`;
+
+              if (isCurrentAttempt) {
+                item.innerText += " (You)";
+              }
+
+              leaderboard.appendChild(item);
+            });
+          });
+      }
+    }
   </script>
 </body>
 </html>

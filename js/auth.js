@@ -5,6 +5,7 @@ function signup() {
 
   firebase.auth().createUserWithEmailAndPassword(email, password)
     .then(() => {
+      localStorage.setItem("currentUserEmail", email);
       alert("Signup successful!");
       window.location.href = "login.html";
     })
@@ -18,6 +19,7 @@ function login() {
 
   firebase.auth().signInWithEmailAndPassword(email, password)
     .then(() => {
+      localStorage.setItem("currentUserEmail", email);
       window.location.href = "dashboard.html";
     })
     .catch(err => alert(err.message));

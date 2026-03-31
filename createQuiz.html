@@ -14,6 +14,10 @@
 <button type="button" onclick="addOptionInput()">Add Option</button>
 
 <select id="answer"></select>
+<label class="toggle-label">
+  <input type="checkbox" id="groupQuizToggle">
+  Group Quiz
+</label>
 
 <button onclick="addQuestion()">Add Question</button>
 <button onclick="saveQuiz()">Save Quiz</button>
@@ -173,12 +177,16 @@ function saveQuiz() {
 
   const db = firebase.firestore();
   const code = generateCode();
+  const isGroupQuiz = document.getElementById("groupQuizToggle").checked;
 
   db.collection("quizzes").doc(code).set({
-    questions: questions
+    questions: questions,
+    isGroupQuiz: isGroupQuiz,
+    createdBy: localStorage.getItem("currentUserEmail") || "Unknown creator"
   });
 
-  document.getElementById("quizCode").innerText = "Quiz Code: " + code;
+  document.getElementById("quizCode").innerText =
+    "Quiz Code: " + code + (isGroupQuiz ? " (Group quiz enabled)" : "");
 }
 
 resetQuestionForm();

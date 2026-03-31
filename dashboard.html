@@ -26,6 +26,11 @@ function resetQuizSession() {
   localStorage.removeItem("quizData");
   localStorage.removeItem("quizTopic");
   localStorage.removeItem("score");
+  localStorage.removeItem("totalPoints");
+  localStorage.removeItem("quizCode");
+  localStorage.removeItem("isGroupQuiz");
+  localStorage.removeItem("attemptDetails");
+  localStorage.removeItem("lastAttemptId");
 }
 
 function goToCreateQuiz() {
@@ -47,11 +52,14 @@ function startPracticeQuiz() {
   localStorage.setItem("quizData", JSON.stringify(sampleQuestions));
   localStorage.removeItem("quizTopic");
   localStorage.removeItem("score");
+  localStorage.removeItem("quizCode");
+  localStorage.setItem("isGroupQuiz", "false");
   window.location.href = "quiz.html";
 }
 
 function logout() {
   resetQuizSession();
+  localStorage.removeItem("currentUserEmail");
   firebase.auth().signOut().then(() => {
     window.location.href = "login.html";
   });
