@@ -6,6 +6,13 @@
 <body>
 
 <h1>Dashboard</h1>
+<div class="profile-card">
+  <div class="profile-avatar" id="profileAvatar">U</div>
+  <div class="profile-details">
+    <p class="profile-label">Logged in as</p>
+    <p class="profile-email" id="profileEmail">Loading...</p>
+  </div>
+</div>
 
 <button onclick="goToCreateQuiz()">Create Quiz</button>
 <button onclick="goToJoinQuiz()">Join Quiz</button>
@@ -23,6 +30,14 @@
 <script src="js/questions.js"></script>
 
 <script>
+function renderUserProfile(user) {
+  const email = user.email || localStorage.getItem("currentUserEmail") || "Unknown user";
+  const initials = email.charAt(0).toUpperCase();
+
+  document.getElementById("profileEmail").innerText = email;
+  document.getElementById("profileAvatar").innerText = initials;
+}
+
 protectPage();
 
 function resetQuizSession() {

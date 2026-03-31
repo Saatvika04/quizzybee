@@ -11,6 +11,9 @@ function protectPage() {
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
       localStorage.setItem("currentUserEmail", user.email || "");
+      if (typeof window.renderUserProfile === "function") {
+        window.renderUserProfile(user);
+      }
       return;
     }
 

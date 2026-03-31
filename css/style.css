@@ -4,6 +4,50 @@ body {
   margin-top: 50px;
 }
 
+.profile-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  width: fit-content;
+  margin: 20px auto 30px;
+  padding: 14px 18px;
+  border: 1px solid #d8d8d8;
+  border-radius: 14px;
+  background: #fafafa;
+}
+
+.profile-avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #222;
+  color: #fff;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.profile-details {
+  text-align: left;
+}
+
+.profile-label,
+.profile-email {
+  margin: 0;
+}
+
+.profile-label {
+  font-size: 13px;
+  color: #666;
+}
+
+.profile-email {
+  font-weight: bold;
+}
+
 input {
   display: block;
   margin: 10px auto;
