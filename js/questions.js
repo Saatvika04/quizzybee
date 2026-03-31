@@ -1,4 +1,4 @@
-const questions = [
+const sampleQuestions = [
   {
     question: "What is the capital of India?",
     options: ["Mumbai", "Delhi", "Chennai", "Kolkata"],
