@@ -1,13 +1,18 @@
+function rememberLoggedInUser(user) {
+  localStorage.setItem("currentUserEmail", user.email || "");
+}
+
 // SIGNUP
 function signup() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  firebase.auth().createUserWithEmailAndPassword(email, password)
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(() => firebase.auth().createUserWithEmailAndPassword(email, password))
     .then(() => {
-      localStorage.setItem("currentUserEmail", email);
+      rememberLoggedInUser(firebase.auth().currentUser || { email });
       alert("Signup successful!");
-      window.location.href = "login.html";
+      window.location.href = "dashboard.html";
     })
     .catch(err => alert(err.message));
 }
@@ -17,9 +22,10 @@ function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  firebase.auth().signInWithEmailAndPassword(email, password)
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(() => firebase.auth().signInWithEmailAndPassword(email, password))
     .then(() => {
-      localStorage.setItem("currentUserEmail", email);
+      rememberLoggedInUser(firebase.auth().currentUser || { email });
       window.location.href = "dashboard.html";
     })
     .catch(err => alert(err.message));
