@@ -34,6 +34,9 @@ const maxOptions = 10;
 function createOptionInput(value = "") {
   optionCount++;
 
+  const optionRow = document.createElement("div");
+  optionRow.className = "option-row";
+
   const input = document.createElement("input");
   input.type = "text";
   input.placeholder = `Option ${optionCount}`;
@@ -41,7 +44,18 @@ function createOptionInput(value = "") {
   input.className = "quiz-option-input";
   input.addEventListener("input", updateAnswerOptions);
 
-  document.getElementById("optionsContainer").appendChild(input);
+  const removeButton = document.createElement("button");
+  removeButton.type = "button";
+  removeButton.className = "remove-option-button";
+  removeButton.innerText = "-";
+  removeButton.addEventListener("click", () => {
+    removeOptionInput(optionRow);
+  });
+
+  optionRow.appendChild(input);
+  optionRow.appendChild(removeButton);
+  document.getElementById("optionsContainer").appendChild(optionRow);
+  updateRemoveButtons();
 }
 
 function addOptionInput() {
@@ -54,6 +68,28 @@ function addOptionInput() {
 
   createOptionInput();
   updateAnswerOptions();
+}
+
+function removeOptionInput(optionRow) {
+  const optionsContainer = document.getElementById("optionsContainer");
+
+  if (optionsContainer.children.length <= 2) {
+    alert("A question must have at least 2 options.");
+    return;
+  }
+
+  optionRow.remove();
+  updateRemoveButtons();
+  updateAnswerOptions();
+}
+
+function updateRemoveButtons() {
+  const removeButtons = document.querySelectorAll(".remove-option-button");
+  const shouldDisable = removeButtons.length <= 2;
+
+  removeButtons.forEach(button => {
+    button.disabled = shouldDisable;
+  });
 }
 
 function updateAnswerOptions() {
