@@ -28,18 +28,14 @@
 
 <script>
 let questions = [];
-let optionCount = 0;
 const maxOptions = 10;
 
 function createOptionInput(value = "") {
-  optionCount++;
-
   const optionRow = document.createElement("div");
   optionRow.className = "option-row";
 
   const input = document.createElement("input");
   input.type = "text";
-  input.placeholder = `Option ${optionCount}`;
   input.value = value;
   input.className = "quiz-option-input";
   input.addEventListener("input", updateAnswerOptions);
@@ -55,6 +51,7 @@ function createOptionInput(value = "") {
   optionRow.appendChild(input);
   optionRow.appendChild(removeButton);
   document.getElementById("optionsContainer").appendChild(optionRow);
+  renumberOptionPlaceholders();
   updateRemoveButtons();
 }
 
@@ -79,6 +76,7 @@ function removeOptionInput(optionRow) {
   }
 
   optionRow.remove();
+  renumberOptionPlaceholders();
   updateRemoveButtons();
   updateAnswerOptions();
 }
@@ -89,6 +87,12 @@ function updateRemoveButtons() {
 
   removeButtons.forEach(button => {
     button.disabled = shouldDisable;
+  });
+}
+
+function renumberOptionPlaceholders() {
+  document.querySelectorAll(".quiz-option-input").forEach((input, index) => {
+    input.placeholder = `Option ${index + 1}`;
   });
 }
 
@@ -119,7 +123,6 @@ function updateAnswerOptions() {
 function resetQuestionForm() {
   document.getElementById("question").value = "";
   document.getElementById("optionsContainer").innerHTML = "";
-  optionCount = 0;
   createOptionInput();
   createOptionInput();
   updateAnswerOptions();
