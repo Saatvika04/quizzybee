@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <meta charset="UTF-8">
+  <title>Create Quiz</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
 <body>
 
 <h2>Create Quiz</h2>
 
 <input id="question" placeholder="Enter question">
-<input id="option1" placeholder="Option 1">
-<input id="option2" placeholder="Option 2">
-<input id="answer" placeholder="Correct Answer">
+<div id="optionsContainer"></div>
+<button type="button" onclick="addOptionInput()">Add Option</button>
+
+<select id="answer"></select>
 
 <button onclick="addQuestion()">Add Question</button>
 <button onclick="saveQuiz()">Save Quiz</button>
@@ -22,19 +28,98 @@
 
 <script>
 let questions = [];
+let optionCount = 0;
+const maxOptions = 10;
+
+function createOptionInput(value = "") {
+  optionCount++;
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = `Option ${optionCount}`;
+  input.value = value;
+  input.className = "quiz-option-input";
+  input.addEventListener("input", updateAnswerOptions);
+
+  document.getElementById("optionsContainer").appendChild(input);
+}
+
+function addOptionInput() {
+  const optionsContainer = document.getElementById("optionsContainer");
+
+  if (optionsContainer.children.length >= maxOptions) {
+    alert("You can add up to 10 options only.");
+    return;
+  }
+
+  createOptionInput();
+  updateAnswerOptions();
+}
+
+function updateAnswerOptions() {
+  const answerSelect = document.getElementById("answer");
+  const optionValues = Array.from(document.querySelectorAll(".quiz-option-input"))
+    .map(input => input.value.trim())
+    .filter(Boolean);
+
+  answerSelect.innerHTML = "";
+
+  if (optionValues.length === 0) {
+    const placeholderOption = document.createElement("option");
+    placeholderOption.text = "Add options first";
+    placeholderOption.value = "";
+    answerSelect.appendChild(placeholderOption);
+    return;
+  }
+
+  optionValues.forEach(option => {
+    const answerOption = document.createElement("option");
+    answerOption.text = option;
+    answerOption.value = option;
+    answerSelect.appendChild(answerOption);
+  });
+}
+
+function resetQuestionForm() {
+  document.getElementById("question").value = "";
+  document.getElementById("optionsContainer").innerHTML = "";
+  optionCount = 0;
+  createOptionInput();
+  createOptionInput();
+  updateAnswerOptions();
+}
 
 function addQuestion() {
+  const questionText = document.getElementById("question").value.trim();
+  const optionValues = Array.from(document.querySelectorAll(".quiz-option-input"))
+    .map(input => input.value.trim())
+    .filter(Boolean);
+  const answer = document.getElementById("answer").value;
+
+  if (!questionText) {
+    alert("Please enter a question.");
+    return;
+  }
+
+  if (optionValues.length < 2) {
+    alert("Please add at least 2 options.");
+    return;
+  }
+
+  if (!optionValues.includes(answer)) {
+    alert("Please choose a correct answer from the options.");
+    return;
+  }
+
   const q = {
-    question: document.getElementById("question").value,
-    options: [
-      document.getElementById("option1").value,
-      document.getElementById("option2").value
-    ],
-    answer: document.getElementById("answer").value
+    question: questionText,
+    options: optionValues,
+    answer: answer
   };
 
   questions.push(q);
   alert("Question added!");
+  resetQuestionForm();
 }
 
 function generateCode() {
@@ -42,6 +127,11 @@ function generateCode() {
 }
 
 function saveQuiz() {
+  if (questions.length === 0) {
+    alert("Please add at least one question before saving.");
+    return;
+  }
+
   const db = firebase.firestore();
   const code = generateCode();
 
@@ -51,6 +141,8 @@ function saveQuiz() {
 
   document.getElementById("quizCode").innerText = "Quiz Code: " + code;
 }
+
+resetQuestionForm();
 </script>
 
 </body>

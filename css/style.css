@@ -10,6 +10,12 @@ input {
   padding: 10px;
 }
 
+select {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+}
+
 button {
   padding: 10px 20px;
   margin: 10px;
