@@ -7,10 +7,10 @@
 
 <h1>Dashboard</h1>
 
-<button onclick="location.href='createQuiz.html'">Create Quiz</button>
-<button onclick="location.href='joinQuiz.html'">Join Quiz</button>
-<button onclick="location.href='generateQuiz.html'">AI Generated Quiz</button>
-<button onclick="location.href='quiz.html'">Practice Quiz</button>
+<button onclick="goToCreateQuiz()">Create Quiz</button>
+<button onclick="goToJoinQuiz()">Join Quiz</button>
+<button onclick="goToAiQuiz()">AI Generated Quiz</button>
+<button onclick="startPracticeQuiz()">Practice Quiz</button>
 
 <button onclick="logout()">Logout</button>
 
@@ -19,9 +19,39 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
 <script src="js/firebase.js"></script>
+<script src="js/questions.js"></script>
 
 <script>
+function resetQuizSession() {
+  localStorage.removeItem("quizData");
+  localStorage.removeItem("quizTopic");
+  localStorage.removeItem("score");
+}
+
+function goToCreateQuiz() {
+  resetQuizSession();
+  window.location.href = "createQuiz.html";
+}
+
+function goToJoinQuiz() {
+  resetQuizSession();
+  window.location.href = "joinQuiz.html";
+}
+
+function goToAiQuiz() {
+  resetQuizSession();
+  window.location.href = "generateQuiz.html";
+}
+
+function startPracticeQuiz() {
+  localStorage.setItem("quizData", JSON.stringify(sampleQuestions));
+  localStorage.removeItem("quizTopic");
+  localStorage.removeItem("score");
+  window.location.href = "quiz.html";
+}
+
 function logout() {
+  resetQuizSession();
   firebase.auth().signOut().then(() => {
     window.location.href = "login.html";
   });

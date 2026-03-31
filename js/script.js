@@ -19,7 +19,6 @@ function getQuizQuestions() {
   }
 
   if (typeof sampleQuestions !== "undefined" && sampleQuestions.length > 0) {
-    localStorage.setItem("quizData", JSON.stringify(sampleQuestions));
     return sampleQuestions;
   }
 
