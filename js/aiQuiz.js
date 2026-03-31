@@ -1,4 +1,4 @@
-const AI_QUIZ_ENDPOINT = "./api/generate-quiz";
+const AI_QUIZ_ENDPOINT = "/api/generateQuiz";
 
 function setStatus(message) {
   document.getElementById("status").innerText = message;
