@@ -14,14 +14,87 @@
 
 body {
   font-family: Arial, sans-serif;
-  text-align: center;
   margin: 0;
   min-height: 100vh;
-  padding: 48px 20px 56px;
+  padding: 0;
   color: var(--bee-ink);
   background:
     radial-gradient(circle at top, rgba(255, 230, 141, 0.45), transparent 34%),
     linear-gradient(180deg, #fff7d6 0%, var(--paper) 48%, #fffdf8 100%);
+}
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 230px;
+  padding: 26px 18px;
+  border-right: 1px solid rgba(111, 90, 30, 0.12);
+  background: rgba(255, 248, 217, 0.9);
+  box-shadow: inset -1px 0 0 rgba(230, 217, 165, 0.7);
+}
+
+.sidebar-brand {
+  margin-bottom: 22px;
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--bee-ink);
+}
+
+.nav-link {
+  display: block;
+  margin-bottom: 10px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  color: var(--bee-ink);
+  text-decoration: none;
+  font-weight: bold;
+  text-align: left;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.nav-link:hover {
+  background: rgba(244, 180, 0, 0.12);
+  transform: translateX(2px);
+}
+
+.nav-link.active {
+  background: linear-gradient(180deg, #ffd75a 0%, #f4b400 100%);
+}
+
+.page-shell {
+  flex: 1;
+  min-width: 0;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 28px;
+  border-bottom: 1px solid rgba(111, 90, 30, 0.12);
+  background: rgba(255, 253, 246, 0.86);
+  backdrop-filter: blur(6px);
+}
+
+.topbar-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.topbar-subtitle {
+  color: var(--bee-brown);
+  font-size: 14px;
+}
+
+.page-content {
+  text-align: center;
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: 40px 20px 56px;
 }
 
 h1,
@@ -208,7 +281,32 @@ button:disabled {
 
 @media (max-width: 480px) {
   body {
-    padding: 32px 16px 40px;
+    padding: 0;
+  }
+
+  .app-shell {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid rgba(111, 90, 30, 0.12);
+    padding: 18px 14px 12px;
+  }
+
+  .nav-link {
+    text-align: center;
+  }
+
+  .topbar {
+    flex-direction: column;
+    text-align: center;
+    padding: 18px 16px;
+  }
+
+  .page-content {
+    padding: 28px 16px 40px;
   }
 
   .profile-card {

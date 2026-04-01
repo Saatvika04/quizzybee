@@ -6,15 +6,30 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-brand">QuizzyBee</div>
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link active" href="login.html">Login</a>
+    <a class="nav-link" href="signup.html">Sign Up</a>
+  </aside>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="topbar-title">Welcome Back</div>
+      <div class="topbar-subtitle">Pick up where you left off</div>
+    </header>
+    <main class="page-content">
+      <h2>Login</h2>
 
-<h2>Login</h2>
+      <input type="email" id="email" placeholder="Email">
+      <input type="password" id="password" placeholder="Password">
 
-<input type="email" id="email" placeholder="Email">
-<input type="password" id="password" placeholder="Password">
+      <button onclick="login()">Login</button>
 
-<button onclick="login()">Login</button>
-
-<p>New user? <a href="signup.html">Sign Up</a></p>
+      <p>New user? <a href="signup.html">Sign Up</a></p>
+    </main>
+  </div>
+</div>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>

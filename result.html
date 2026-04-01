@@ -7,15 +7,33 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h1>Your Score:</h1>
-  <p id="score"></p>
-  <h2 id="pointsHeading" hidden>Total Points:</h2>
-  <p id="points" hidden></p>
-  <div id="leaderboardSection" hidden>
-    <h2>Leaderboard</h2>
-    <ol id="leaderboard"></ol>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand">QuizzyBee</div>
+      <a class="nav-link" href="dashboard.html">Dashboard</a>
+      <a class="nav-link" href="createQuiz.html">Create Quiz</a>
+      <a class="nav-link" href="joinQuiz.html">Join Quiz</a>
+      <a class="nav-link" href="generateQuiz.html">AI Quiz</a>
+      <a class="nav-link active" href="result.html">Results</a>
+    </aside>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="topbar-title">Quiz Results</div>
+        <div class="topbar-subtitle">See how you performed</div>
+      </header>
+      <main class="page-content">
+        <h1>Your Score:</h1>
+        <p id="score"></p>
+        <h2 id="pointsHeading" hidden>Total Points:</h2>
+        <p id="points" hidden></p>
+        <div id="leaderboardSection" hidden>
+          <h2>Leaderboard</h2>
+          <ol id="leaderboard"></ol>
+        </div>
+        <button onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
+      </main>
+    </div>
   </div>
-  <button onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
 
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>

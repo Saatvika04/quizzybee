@@ -6,21 +6,37 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-brand">QuizzyBee</div>
+    <a class="nav-link active" href="dashboard.html">Dashboard</a>
+    <a class="nav-link" href="createQuiz.html">Create Quiz</a>
+    <a class="nav-link" href="joinQuiz.html">Join Quiz</a>
+    <a class="nav-link" href="generateQuiz.html">AI Quiz</a>
+  </aside>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="topbar-title">Dashboard</div>
+      <div class="topbar-subtitle">Choose how you want to quiz today</div>
+    </header>
+    <main class="page-content">
+      <h1>Dashboard</h1>
+      <div class="profile-card">
+        <div class="profile-avatar" id="profileAvatar">U</div>
+        <div class="profile-details">
+          <p class="profile-label">Logged in as</p>
+          <p class="profile-email" id="profileEmail">Loading...</p>
+        </div>
+      </div>
 
-<h1>Dashboard</h1>
-<div class="profile-card">
-  <div class="profile-avatar" id="profileAvatar">U</div>
-  <div class="profile-details">
-    <p class="profile-label">Logged in as</p>
-    <p class="profile-email" id="profileEmail">Loading...</p>
+      <button onclick="goToCreateQuiz()">Create Quiz</button>
+      <button onclick="goToJoinQuiz()">Join Quiz</button>
+      <button onclick="goToAiQuiz()">AI Generated Quiz</button>
+
+      <button onclick="logout()">Logout</button>
+    </main>
   </div>
 </div>
-
-<button onclick="goToCreateQuiz()">Create Quiz</button>
-<button onclick="goToJoinQuiz()">Join Quiz</button>
-<button onclick="goToAiQuiz()">AI Generated Quiz</button>
-
-<button onclick="logout()">Logout</button>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>

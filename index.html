@@ -12,8 +12,25 @@
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
-    <h1>Online Quiz</h1>
-    <button onclick="startQuiz()">Get Started</button>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="sidebar-brand">QuizzyBee</div>
+        <a class="nav-link active" href="index.html">Home</a>
+        <a class="nav-link" href="login.html">Login</a>
+        <a class="nav-link" href="signup.html">Sign Up</a>
+      </aside>
+      <div class="page-shell">
+        <header class="topbar">
+          <div class="topbar-title">QuizzyBee</div>
+          <div class="topbar-subtitle">Smart quizzes with a gentle bee buzz</div>
+        </header>
+        <main class="page-content">
+          <h1>Online Quiz</h1>
+          <p>Sign in to create, join, or generate quizzes.</p>
+          <button onclick="startQuiz()">Get Started</button>
+        </main>
+      </div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
