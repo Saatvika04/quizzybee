@@ -18,8 +18,17 @@
     </aside>
     <div class="page-shell">
       <header class="topbar">
-        <div class="topbar-title">Quiz Results</div>
-        <div class="topbar-subtitle">See how you performed</div>
+        <div>
+          <div class="topbar-title">Quiz Results</div>
+          <div class="topbar-subtitle">See how you performed</div>
+        </div>
+        <div class="topbar-profile">
+          <div class="topbar-profile-avatar" data-topbar-avatar>U</div>
+          <div class="topbar-profile-text">
+            <span class="topbar-profile-label">Logged in as</span>
+            <span class="topbar-profile-email" data-topbar-email>Guest</span>
+          </div>
+        </div>
       </header>
       <main class="page-content">
         <h1>Your Score:</h1>
@@ -37,8 +46,12 @@
 
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="js/firebase.js"></script>
+  <script src="js/session.js"></script>
   <script>
+    renderTopbarProfile();
+
     const savedScore = localStorage.getItem("score");
     document.getElementById("score").innerText =
       savedScore !== null ? savedScore : "No score available";

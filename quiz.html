@@ -17,8 +17,17 @@
   </aside>
   <div class="page-shell">
     <header class="topbar">
-      <div class="topbar-title">Quiz In Progress</div>
-      <div class="topbar-subtitle">Read carefully and answer with confidence</div>
+      <div>
+        <div class="topbar-title">Quiz In Progress</div>
+        <div class="topbar-subtitle">Read carefully and answer with confidence</div>
+      </div>
+      <div class="topbar-profile">
+        <div class="topbar-profile-avatar" data-topbar-avatar>U</div>
+        <div class="topbar-profile-text">
+          <span class="topbar-profile-label">Logged in as</span>
+          <span class="topbar-profile-email" data-topbar-email>Guest</span>
+        </div>
+      </div>
     </header>
     <main class="page-content">
       <h2 id="question"></h2>
@@ -29,11 +38,14 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="js/firebase.js"></script>
+<script src="js/session.js"></script>
 <script src="js/questions.js"></script>
 <script src="js/script.js"></script>
 
 <script>
+  renderTopbarProfile();
   initializeQuiz();
 </script>
 

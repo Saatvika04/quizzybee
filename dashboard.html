@@ -16,18 +16,20 @@
   </aside>
   <div class="page-shell">
     <header class="topbar">
-      <div class="topbar-title">Dashboard</div>
-      <div class="topbar-subtitle">Choose how you want to quiz today</div>
+      <div>
+        <div class="topbar-title">Dashboard</div>
+        <div class="topbar-subtitle">Choose how you want to quiz today</div>
+      </div>
+      <div class="topbar-profile">
+        <div class="topbar-profile-avatar" data-topbar-avatar>U</div>
+        <div class="topbar-profile-text">
+          <span class="topbar-profile-label">Logged in as</span>
+          <span class="topbar-profile-email" data-topbar-email>Loading...</span>
+        </div>
+      </div>
     </header>
     <main class="page-content">
       <h1>Dashboard</h1>
-      <div class="profile-card">
-        <div class="profile-avatar" id="profileAvatar">U</div>
-        <div class="profile-details">
-          <p class="profile-label">Logged in as</p>
-          <p class="profile-email" id="profileEmail">Loading...</p>
-        </div>
-      </div>
 
       <button onclick="goToCreateQuiz()">Create Quiz</button>
       <button onclick="goToJoinQuiz()">Join Quiz</button>
@@ -46,14 +48,6 @@
 <script src="js/session.js"></script>
 
 <script>
-function renderUserProfile(user) {
-  const email = user.email || localStorage.getItem("currentUserEmail") || "Unknown user";
-  const initials = email.charAt(0).toUpperCase();
-
-  document.getElementById("profileEmail").innerText = email;
-  document.getElementById("profileAvatar").innerText = initials;
-}
-
 protectPage();
 
 function resetQuizSession() {

@@ -16,8 +16,17 @@
   </aside>
   <div class="page-shell">
     <header class="topbar">
-      <div class="topbar-title">Join Quiz</div>
-      <div class="topbar-subtitle">Enter a room code and start competing</div>
+      <div>
+        <div class="topbar-title">Join Quiz</div>
+        <div class="topbar-subtitle">Enter a room code and start competing</div>
+      </div>
+      <div class="topbar-profile">
+        <div class="topbar-profile-avatar" data-topbar-avatar>U</div>
+        <div class="topbar-profile-text">
+          <span class="topbar-profile-label">Logged in as</span>
+          <span class="topbar-profile-email" data-topbar-email>Guest</span>
+        </div>
+      </div>
     </header>
     <main class="page-content">
       <h2>Join Quiz</h2>
@@ -32,10 +41,14 @@
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
 <script src="js/firebase.js"></script>
+<script src="js/session.js"></script>
 
 <script>
+renderTopbarProfile();
+
 function joinQuiz() {
   const code = document.getElementById("code").value;
   const db = firebase.firestore();
