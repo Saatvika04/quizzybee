@@ -31,11 +31,31 @@
     </header>
     <main class="page-content">
       <div class="team-badge hidden" id="teamBadge"></div>
+      <div class="party-status hidden" id="partyStatus">
+        <div class="timer-track hidden" id="timerTrack">
+          <div class="timer-fill" id="timerFill"></div>
+          <div class="timer-bee" id="timerBee">🐝</div>
+          <span class="timer-label" id="timerLabel">Hive timer active</span>
+        </div>
+      </div>
+      <div class="party-controls hidden" id="partyControls">
+        <p class="party-controls-title">Power-Ups</p>
+        <p id="partyMessage">Get 3 correct answers in a row to unlock sabotage.</p>
+        <select id="sabotageTarget"></select>
+        <div class="party-actions">
+          <button type="button" id="flashbangButton" onclick="sendSabotage('flashbang')" disabled>Flashbang</button>
+          <button type="button" id="invertButton" onclick="sendSabotage('invert')" disabled>Invert</button>
+        </div>
+      </div>
+      <div class="quiz-stage" id="quizStage">
       <h2 id="question"></h2>
       <div id="options"></div>
+      </div>
     </main>
   </div>
 </div>
+<div class="overlay hidden" id="flashbangOverlay">Flashbang!</div>
+<div class="overlay battery-overlay hidden" id="batteryOverlay">Hive battery at 5%</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>

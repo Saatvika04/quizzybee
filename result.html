@@ -69,11 +69,12 @@
     const teamName = localStorage.getItem("teamName");
     const partySettings = JSON.parse(localStorage.getItem("partySettings") || "null");
     const isTeamMode = Boolean(partySettings && partySettings.teamMode);
+    const hasLeaderboard = !partySettings || partySettings.leaderboard !== false;
 
     if (isGroupQuiz) {
       document.getElementById("pointsHeading").hidden = false;
       document.getElementById("points").hidden = false;
-      document.getElementById("leaderboardSection").hidden = false;
+      document.getElementById("leaderboardSection").hidden = !hasLeaderboard;
       document.getElementById("points").innerText =
         totalPoints !== null ? totalPoints : "No points recorded";
 
@@ -84,8 +85,6 @@
           .collection("attempts")
           .get()
           .then(snapshot => {
-            const leaderboard = document.getElementById("leaderboard");
-            leaderboard.innerHTML = "";
             const attempts = snapshot.docs
               .map(doc => ({ id: doc.id, ...doc.data() }))
               .sort((a, b) => {
@@ -96,22 +95,27 @@
                 return a.totalTimeMs - b.totalTimeMs;
               });
 
-            attempts.forEach(attempt => {
-              const isCurrentAttempt = attempt.id === lastAttemptId;
-              const item = document.createElement("li");
-              item.innerText =
-                `${attempt.playerName} - ${attempt.totalPoints} pts - ${Math.round(attempt.totalTimeMs / 1000)} sec`;
+            if (hasLeaderboard) {
+              const leaderboard = document.getElementById("leaderboard");
+              leaderboard.innerHTML = "";
 
-              if (isCurrentAttempt) {
-                item.innerText += " (You)";
-              }
+              attempts.forEach(attempt => {
+                const isCurrentAttempt = attempt.id === lastAttemptId;
+                const item = document.createElement("li");
+                item.innerText =
+                  `${attempt.playerName} - ${attempt.totalPoints} pts - ${Math.round(attempt.totalTimeMs / 1000)} sec`;
 
-              leaderboard.appendChild(item);
-            });
+                if (isCurrentAttempt) {
+                  item.innerText += " (You)";
+                }
+
+                leaderboard.appendChild(item);
+              });
+            }
 
             if (isTeamMode) {
               document.getElementById("teamSummary").hidden = false;
-              document.getElementById("teamLeaderboardSection").hidden = false;
+              document.getElementById("teamLeaderboardSection").hidden = !hasLeaderboard;
               document.getElementById("teamSummary").innerText =
                 teamName ? `You played for ${teamName}.` : "You were not assigned to a team.";
 
@@ -134,28 +138,30 @@
                 teamTotals[attempt.teamId].totalTimeMs += attempt.totalTimeMs || 0;
               });
 
-              const teamLeaderboard = document.getElementById("teamLeaderboard");
-              teamLeaderboard.innerHTML = "";
+              if (hasLeaderboard) {
+                const teamLeaderboard = document.getElementById("teamLeaderboard");
+                teamLeaderboard.innerHTML = "";
 
-              Object.values(teamTotals)
-                .sort((a, b) => {
-                  if (b.totalPoints !== a.totalPoints) {
-                    return b.totalPoints - a.totalPoints;
-                  }
+                Object.values(teamTotals)
+                  .sort((a, b) => {
+                    if (b.totalPoints !== a.totalPoints) {
+                      return b.totalPoints - a.totalPoints;
+                    }
 
-                  return a.totalTimeMs - b.totalTimeMs;
-                })
-                .forEach(team => {
-                  const item = document.createElement("li");
-                  item.innerText =
-                    `${team.teamName} - ${team.totalPoints} pts - ${Math.round(team.totalTimeMs / 1000)} sec`;
+                    return a.totalTimeMs - b.totalTimeMs;
+                  })
+                  .forEach(team => {
+                    const item = document.createElement("li");
+                    item.innerText =
+                      `${team.teamName} - ${team.totalPoints} pts - ${Math.round(team.totalTimeMs / 1000)} sec`;
 
-                  if (team.teamId === teamId) {
-                    item.innerText += " (Your Team)";
-                  }
+                    if (team.teamId === teamId) {
+                      item.innerText += " (Your Team)";
+                    }
 
-                  teamLeaderboard.appendChild(item);
-                });
+                    teamLeaderboard.appendChild(item);
+                  });
+              }
             }
           });
       }
