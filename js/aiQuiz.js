@@ -50,7 +50,8 @@ function getPartySettings() {
     lowBatteryWarning: document.getElementById("lowBatteryWarningToggle").checked,
     sabotage: document.getElementById("sabotageToggle").checked,
     teamMode,
-    teamCount: teamMode ? Number(document.getElementById("teamCountSelect").value) : null
+    teamCount: teamMode ? Number(document.getElementById("teamCountSelect").value) : null,
+    teamAssignmentMode: teamMode ? document.getElementById("teamAssignmentModeSelect").value : null
   };
 }
 
