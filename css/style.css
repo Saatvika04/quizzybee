@@ -40,11 +40,7 @@ body {
   padding: 0;
   color: var(--bee-ink);
   cursor: var(--cursor-default);
-  background:
-    radial-gradient(circle at top left, rgba(255, 170, 203, 0.45), transparent 24%),
-    radial-gradient(circle at top right, rgba(173, 227, 255, 0.42), transparent 28%),
-    radial-gradient(circle at bottom left, rgba(198, 243, 179, 0.35), transparent 30%),
-    linear-gradient(180deg, #d7edf7 0%, #fff5df 50%, #fce0ea 100%);
+  background: #dbeff7;
 }
 
 .app-shell {
@@ -55,16 +51,14 @@ body {
     inset 1px 1px 0 #f6fbff,
     inset -1px -1px 0 #5a667a,
     0 14px 40px rgba(40, 50, 73, 0.25);
-  background: linear-gradient(180deg, #f8f0df 0%, #ecdff5 100%);
+  background: #efe6d7;
 }
 
 .sidebar {
   width: 230px;
   padding: 10px 10px 18px;
   border-right: 2px solid var(--chrome-border);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0)),
-    linear-gradient(180deg, #f7efcf 0%, #f7d8e7 58%, #d8f3d8 100%);
+  background: #f6e6a9;
   box-shadow:
     inset 1px 1px 0 var(--chrome-highlight),
     inset -1px -1px 0 #b4a17c;
@@ -74,7 +68,7 @@ body {
   margin-bottom: 14px;
   padding: 8px 10px;
   border: 2px solid var(--chrome-border);
-  background: linear-gradient(90deg, #fff5bf 0%, #ffcfdc 48%, #cfeeff 100%);
+  background: #ffd2dd;
   box-shadow:
     inset 1px 1px 0 var(--chrome-highlight),
     inset -1px -1px 0 #b99c43;
@@ -99,13 +93,13 @@ body {
 }
 
 .nav-link:hover {
-  background: linear-gradient(90deg, rgba(255, 199, 216, 0.85), rgba(255, 240, 188, 0.85));
+  background: #ffe8a3;
   border-color: #d3c19b;
   cursor: var(--cursor-pointer);
 }
 
 .nav-link.active {
-  background: linear-gradient(90deg, #ffd2dd 0%, #ffe584 44%, #bdecc7 100%);
+  background: #bfe7c6;
   border-color: #b98b5b;
   box-shadow:
     inset 1px 1px 0 #fff4bb,
@@ -115,8 +109,7 @@ body {
 .page-shell {
   flex: 1;
   min-width: 0;
-  background:
-    linear-gradient(180deg, #e9f8ff 0%, #fff8eb 52%, #ffe9f1 100%);
+  background: #cfe9f3;
 }
 
 .topbar {
@@ -126,7 +119,7 @@ body {
   gap: 16px;
   padding: 9px 14px;
   border-bottom: 2px solid #6f7e94;
-  background: linear-gradient(90deg, #5b8cf1 0%, #8c79ef 48%, #ff8db4 100%);
+  background: #5e88df;
   box-shadow:
     inset 1px 1px 0 #94c1ff,
     inset -1px -1px 0 #103f8f;
@@ -150,7 +143,7 @@ body {
   gap: 12px;
   padding: 6px 10px;
   border: 2px solid #274f8e;
-  background: linear-gradient(90deg, #fff7d4 0%, #ffd5e0 58%, #e1f6ff 100%);
+  background: #fff1b8;
   box-shadow:
     inset 1px 1px 0 var(--chrome-highlight),
     inset -1px -1px 0 #9b8a63;
@@ -164,7 +157,7 @@ body {
   height: 34px;
   border: 2px solid #7f713c;
   border-radius: 2px;
-  background: linear-gradient(180deg, #fff0a8 0%, #f7a4c5 100%);
+  background: #f6a7c1;
   color: #4b2140;
   font-size: 16px;
   font-weight: bold;
@@ -196,11 +189,7 @@ body {
   margin: 18px auto;
   padding: 26px 22px 40px;
   border: 2px solid var(--chrome-border);
-  background:
-    radial-gradient(circle at 12% 16%, rgba(255, 214, 230, 0.5), transparent 16%),
-    radial-gradient(circle at 88% 24%, rgba(198, 235, 255, 0.5), transparent 16%),
-    radial-gradient(circle at 20% 88%, rgba(207, 247, 199, 0.45), transparent 18%),
-    linear-gradient(180deg, #fffef9 0%, #fff7ea 100%);
+  background: #fffaf0;
   box-shadow:
     inset 1px 1px 0 var(--chrome-highlight),
     inset -1px -1px 0 var(--chrome-well-mid),
@@ -230,7 +219,7 @@ select {
   margin: 12px auto;
   padding: 9px 10px;
   border: 2px solid var(--chrome-well-dark);
-  background: linear-gradient(180deg, #fffefc 0%, #fff8f8 100%);
+  background: #ffffff;
   color: var(--bee-ink);
   box-shadow:
     inset 1px 1px 0 #8f8366,
@@ -250,7 +239,7 @@ button {
   padding: 9px 16px;
   margin: 10px 6px;
   border: 2px solid #9e9072;
-  background: linear-gradient(180deg, #fff6e8 0%, #ffd8e6 45%, #ffeaa2 100%);
+  background: #ffc9db;
   color: var(--bee-ink);
   font-weight: bold;
   cursor: pointer;
@@ -264,7 +253,7 @@ button {
 }
 
 button:hover {
-  background: linear-gradient(180deg, #fffaf2 0%, #ffdce9 35%, #d8f6df 100%);
+  background: #ffddeb;
 }
 
 button:disabled {
@@ -279,7 +268,7 @@ button:active {
   box-shadow:
     inset -1px -1px 0 var(--chrome-highlight),
     inset 1px 1px 0 #9e9072;
-  background: linear-gradient(180deg, #f1d9e3 0%, #f7e6ad 100%);
+  background: #f4b6cf;
   padding-top: 10px;
   padding-bottom: 8px;
 }
@@ -316,7 +305,7 @@ button:active {
   height: 48px;
   border: 2px solid var(--chrome-well-dark);
   overflow: hidden;
-  background: #f7f2e4;
+  background: #fff4bb;
   box-shadow:
     inset 1px 1px 0 #908267,
     inset -1px -1px 0 #fffdf6;
@@ -326,7 +315,7 @@ button:active {
   position: absolute;
   inset: 0 auto 0 0;
   width: 0;
-  background: linear-gradient(90deg, #ffd75a 0%, #f4b400 60%, #df8b00 100%);
+  background: #ff9ec0;
   transition: width 0.1s linear;
 }
 
@@ -355,7 +344,7 @@ button:active {
   margin: 0 auto 22px;
   padding: 16px 18px;
   border: 2px solid var(--chrome-border);
-  background: linear-gradient(180deg, #fff6ef 0%, #ffe4ef 46%, #e7fbeb 100%);
+  background: #e1f6ff;
   box-shadow:
     inset 1px 1px 0 var(--chrome-highlight),
     inset -1px -1px 0 #c5b28a;
@@ -398,7 +387,7 @@ button:active {
   margin: 20px auto 0;
   padding: 16px 18px;
   border: 2px solid var(--chrome-border);
-  background: linear-gradient(180deg, #fff6ef 0%, #ffe4ef 46%, #e7fbeb 100%);
+  background: #ffe4ef;
   box-shadow:
     inset 1px 1px 0 var(--chrome-highlight),
     inset -1px -1px 0 #c5b28a;
@@ -419,7 +408,7 @@ button:active {
   margin: 20px auto 0;
   padding: 16px 18px;
   border: 2px solid var(--chrome-border);
-  background: linear-gradient(180deg, #eef9ff 0%, #ffe4ef 52%, #fff0ba 100%);
+  background: #dff6df;
   box-shadow:
     inset 1px 1px 0 var(--chrome-highlight),
     inset -1px -1px 0 #c5b28a;
@@ -481,7 +470,7 @@ button:active {
   margin: 14px auto 18px;
   padding: 14px 16px;
   border: 2px solid var(--chrome-border);
-  background: linear-gradient(180deg, #eef9ff 0%, #ffe8f0 54%, #fff1bf 100%);
+  background: #e9e1ff;
   box-shadow:
     inset 1px 1px 0 var(--chrome-highlight),
     inset -1px -1px 0 #c5b28a;
@@ -498,7 +487,7 @@ button:active {
   margin: 0 0 18px;
   padding: 8px 14px;
   border: 2px solid var(--chrome-border);
-  background: linear-gradient(90deg, #d7f5de 0%, #fff0a8 52%, #ffd2df 100%);
+  background: #fff0a8;
   color: var(--bee-ink);
   font-weight: bold;
   box-shadow:
