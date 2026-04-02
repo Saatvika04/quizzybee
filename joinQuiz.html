@@ -49,12 +49,34 @@
 <script>
 renderTopbarProfile();
 
+async function registerParticipant(quizCode, quiz, playerName) {
+  const participantRef = firebase.firestore()
+    .collection("quizzes")
+    .doc(quizCode)
+    .collection("participants")
+    .doc();
+
+  await participantRef.set({
+    playerName,
+    playerEmail: localStorage.getItem("currentUserEmail") || "",
+    joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    isHost: false,
+    isPartyMode: Boolean(quiz.isPartyMode),
+    teamId: null,
+    teamName: null
+  });
+
+  localStorage.setItem("participantId", participantRef.id);
+  localStorage.removeItem("teamId");
+  localStorage.removeItem("teamName");
+}
+
 function joinQuiz() {
   const code = document.getElementById("code").value;
   const db = firebase.firestore();
 
   db.collection("quizzes").doc(code).get()
-    .then(doc => {
+    .then(async doc => {
       if (doc.exists) {
         const quiz = doc.data();
         const playerName = document.getElementById("playerName").value.trim();
@@ -75,6 +97,11 @@ function joinQuiz() {
         localStorage.removeItem("lastAttemptId");
         localStorage.setItem(
           "playerName",
+          playerName || localStorage.getItem("currentUserEmail") || "Guest Player"
+        );
+        await registerParticipant(
+          code,
+          quiz,
           playerName || localStorage.getItem("currentUserEmail") || "Guest Player"
         );
         window.location.href = "quiz.html";

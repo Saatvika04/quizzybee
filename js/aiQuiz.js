@@ -56,6 +56,28 @@ function getPartySettings() {
   };
 }
 
+async function registerHostParticipant(code, isPartyMode, playerName) {
+  const participantRef = firebase.firestore()
+    .collection("quizzes")
+    .doc(code)
+    .collection("participants")
+    .doc();
+
+  await participantRef.set({
+    playerName,
+    playerEmail: localStorage.getItem("currentUserEmail") || "",
+    joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    isHost: true,
+    isPartyMode,
+    teamId: null,
+    teamName: null
+  });
+
+  localStorage.setItem("participantId", participantRef.id);
+  localStorage.removeItem("teamId");
+  localStorage.removeItem("teamName");
+}
+
 async function generateQuiz() {
   const topic = document.getElementById("topic").value.trim();
   const generateButton = document.getElementById("generateButton");
@@ -105,12 +127,20 @@ async function generateQuiz() {
       localStorage.setItem("isPartyMode", String(isPartyMode));
       localStorage.setItem("partySettings", JSON.stringify(partySettings));
       localStorage.setItem("playerName", localStorage.getItem("currentUserEmail") || "Quiz Host");
+      await registerHostParticipant(
+        code,
+        isPartyMode,
+        localStorage.getItem("currentUserEmail") || "Quiz Host"
+      );
       alert(`Group quiz created. Share this code: ${code}`);
     } else {
       localStorage.removeItem("quizCode");
       localStorage.setItem("isGroupQuiz", "false");
       localStorage.setItem("isPartyMode", String(isPartyMode));
       localStorage.setItem("partySettings", JSON.stringify(partySettings));
+      localStorage.removeItem("participantId");
+      localStorage.removeItem("teamId");
+      localStorage.removeItem("teamName");
       localStorage.removeItem("playerName");
     }
 
