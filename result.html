@@ -35,6 +35,11 @@
         <p id="score"></p>
         <h2 id="pointsHeading" hidden>Total Points:</h2>
         <p id="points" hidden></p>
+        <p id="teamSummary" hidden></p>
+        <div id="teamLeaderboardSection" hidden>
+          <h2>Team Leaderboard</h2>
+          <ol id="teamLeaderboard"></ol>
+        </div>
         <div id="leaderboardSection" hidden>
           <h2>Leaderboard</h2>
           <ol id="leaderboard"></ol>
@@ -60,6 +65,10 @@
     const totalPoints = localStorage.getItem("totalPoints");
     const quizCode = localStorage.getItem("quizCode");
     const lastAttemptId = localStorage.getItem("lastAttemptId");
+    const teamId = localStorage.getItem("teamId");
+    const teamName = localStorage.getItem("teamName");
+    const partySettings = JSON.parse(localStorage.getItem("partySettings") || "null");
+    const isTeamMode = Boolean(partySettings && partySettings.teamMode);
 
     if (isGroupQuiz) {
       document.getElementById("pointsHeading").hidden = false;
@@ -99,6 +108,55 @@
 
               leaderboard.appendChild(item);
             });
+
+            if (isTeamMode) {
+              document.getElementById("teamSummary").hidden = false;
+              document.getElementById("teamLeaderboardSection").hidden = false;
+              document.getElementById("teamSummary").innerText =
+                teamName ? `You played for ${teamName}.` : "You were not assigned to a team.";
+
+              const teamTotals = {};
+              attempts.forEach(attempt => {
+                if (!attempt.teamId) {
+                  return;
+                }
+
+                if (!teamTotals[attempt.teamId]) {
+                  teamTotals[attempt.teamId] = {
+                    teamId: attempt.teamId,
+                    teamName: attempt.teamName || attempt.teamId,
+                    totalPoints: 0,
+                    totalTimeMs: 0
+                  };
+                }
+
+                teamTotals[attempt.teamId].totalPoints += attempt.totalPoints || 0;
+                teamTotals[attempt.teamId].totalTimeMs += attempt.totalTimeMs || 0;
+              });
+
+              const teamLeaderboard = document.getElementById("teamLeaderboard");
+              teamLeaderboard.innerHTML = "";
+
+              Object.values(teamTotals)
+                .sort((a, b) => {
+                  if (b.totalPoints !== a.totalPoints) {
+                    return b.totalPoints - a.totalPoints;
+                  }
+
+                  return a.totalTimeMs - b.totalTimeMs;
+                })
+                .forEach(team => {
+                  const item = document.createElement("li");
+                  item.innerText =
+                    `${team.teamName} - ${team.totalPoints} pts - ${Math.round(team.totalTimeMs / 1000)} sec`;
+
+                  if (team.teamId === teamId) {
+                    item.innerText += " (Your Team)";
+                  }
+
+                  teamLeaderboard.appendChild(item);
+                });
+            }
           });
       }
     }

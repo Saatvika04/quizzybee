@@ -32,6 +32,14 @@ function isGroupQuiz() {
   return localStorage.getItem("isGroupQuiz") === "true";
 }
 
+function getStoredPartySettings() {
+  try {
+    return JSON.parse(localStorage.getItem("partySettings") || "null");
+  } catch (error) {
+    return null;
+  }
+}
+
 function calculateGroupPoints(timeMs) {
   const timePenalty = Math.floor(timeMs / 1000) * 5;
   return Math.max(10, 100 - timePenalty);
@@ -52,6 +60,8 @@ async function saveGroupAttempt() {
 
   const attempt = {
     playerName,
+    teamId: localStorage.getItem("teamId") || null,
+    teamName: localStorage.getItem("teamName") || null,
     totalPoints,
     totalTimeMs,
     score,
@@ -134,5 +144,20 @@ function initializeQuiz() {
   score = 0;
   totalPoints = 0;
   attemptDetails = [];
+
+  const partySettings = getStoredPartySettings();
+  const teamName = localStorage.getItem("teamName");
+  const isTeamMode = Boolean(partySettings && partySettings.teamMode);
+  const teamBadge = document.getElementById("teamBadge");
+
+  if (teamBadge) {
+    if (isTeamMode && teamName) {
+      teamBadge.innerText = `Playing for ${teamName}`;
+      teamBadge.classList.remove("hidden");
+    } else {
+      teamBadge.classList.add("hidden");
+    }
+  }
+
   loadQuestion();
 }

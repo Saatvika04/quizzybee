@@ -53,14 +53,7 @@
 <script>
 renderTopbarProfile();
 
-function getTeamOptions(teamCount) {
-  return Array.from({ length: teamCount }, (_, index) => ({
-    teamId: `team-${index + 1}`,
-    teamName: `Team ${index + 1}`
-  }));
-}
-
-async function getAutomaticTeamAssignment(quizCode, teamCount) {
+async function getTeamCounts(quizCode, teamCount) {
   const participantsSnapshot = await firebase.firestore()
     .collection("quizzes")
     .doc(quizCode)
@@ -80,8 +73,24 @@ async function getAutomaticTeamAssignment(quizCode, teamCount) {
     }
   });
 
+  return teamCounts;
+}
+
+function getTeamOptions(teamCount) {
+  return Array.from({ length: teamCount }, (_, index) => ({
+    teamId: `team-${index + 1}`,
+    teamName: `Team ${index + 1}`
+  }));
+}
+
+async function getAutomaticTeamAssignment(quizCode, teamCount) {
+  const teamCounts = await getTeamCounts(quizCode, teamCount);
   const sortedTeams = Object.entries(teamCounts).sort((a, b) => a[1] - b[1]);
-  const selectedTeamId = sortedTeams[0][0];
+  const smallestCount = sortedTeams[0][1];
+  const candidateTeams = sortedTeams
+    .filter(([, count]) => count === smallestCount)
+    .map(([teamId]) => teamId);
+  const selectedTeamId = candidateTeams[Math.floor(Math.random() * candidateTeams.length)];
   const selectedTeamName = getTeamOptions(teamCount).find(team => team.teamId === selectedTeamId).teamName;
 
   return {
@@ -90,16 +99,31 @@ async function getAutomaticTeamAssignment(quizCode, teamCount) {
   };
 }
 
-function populateTeamChoice(teamCount) {
+async function populateTeamChoice(quizCode, teamCount, enforceBalancedTeams) {
   const teamChoiceSelect = document.getElementById("teamChoiceSelect");
   teamChoiceSelect.innerHTML = "";
+  const teamCounts = await getTeamCounts(quizCode, teamCount);
+  const counts = Object.values(teamCounts);
+  const smallestTeamSize = counts.length > 0 ? Math.min(...counts) : 0;
 
   getTeamOptions(teamCount).forEach(team => {
     const option = document.createElement("option");
     option.value = team.teamId;
-    option.text = team.teamName;
+    option.text = `${team.teamName} (${teamCounts[team.teamId]} players)`;
+
+    if (enforceBalancedTeams && teamCounts[team.teamId] > smallestTeamSize) {
+      option.disabled = true;
+    }
+
     teamChoiceSelect.appendChild(option);
   });
+}
+
+function isBalancedJoinAllowed(teamCounts, selectedTeamId) {
+  const nextCounts = { ...teamCounts };
+  nextCounts[selectedTeamId] += 1;
+  const counts = Object.values(nextCounts);
+  return Math.max(...counts) - Math.min(...counts) <= 1;
 }
 
 async function registerParticipant(quizCode, quiz, playerName, teamAssignment) {
@@ -149,7 +173,11 @@ function joinQuiz() {
             const existingCode = teamChoicePanel.dataset.quizCode;
 
             if (teamChoicePanel.classList.contains("hidden") || existingCode !== code) {
-              populateTeamChoice(partySettings.teamCount || 2);
+              await populateTeamChoice(
+                code,
+                partySettings.teamCount || 2,
+                Boolean(partySettings.enforceBalancedTeams)
+              );
               teamChoicePanel.dataset.quizCode = code;
               teamChoicePanel.classList.remove("hidden");
               alert("Choose a team and click Start Quiz again.");
@@ -157,6 +185,21 @@ function joinQuiz() {
             }
 
             const selectedTeamId = document.getElementById("teamChoiceSelect").value;
+            const teamCounts = await getTeamCounts(code, partySettings.teamCount || 2);
+
+            if (
+              partySettings.enforceBalancedTeams
+              && !isBalancedJoinAllowed(teamCounts, selectedTeamId)
+            ) {
+              alert("That team is already too large. Please choose a smaller team.");
+              await populateTeamChoice(
+                code,
+                partySettings.teamCount || 2,
+                true
+              );
+              return;
+            }
+
             teamAssignment = {
               teamId: selectedTeamId,
               teamName: getTeamOptions(partySettings.teamCount || 2)
