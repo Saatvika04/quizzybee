@@ -33,6 +33,10 @@
 
       <input id="code" placeholder="Enter Quiz Code">
       <input id="playerName" placeholder="Enter your name for the leaderboard">
+      <div class="settings-panel hidden" id="teamChoicePanel">
+        <p class="settings-title">Choose Your Team</p>
+        <select id="teamChoiceSelect"></select>
+      </div>
       <button onclick="joinQuiz()">Start Quiz</button>
     </main>
   </div>
@@ -49,7 +53,56 @@
 <script>
 renderTopbarProfile();
 
-async function registerParticipant(quizCode, quiz, playerName) {
+function getTeamOptions(teamCount) {
+  return Array.from({ length: teamCount }, (_, index) => ({
+    teamId: `team-${index + 1}`,
+    teamName: `Team ${index + 1}`
+  }));
+}
+
+async function getAutomaticTeamAssignment(quizCode, teamCount) {
+  const participantsSnapshot = await firebase.firestore()
+    .collection("quizzes")
+    .doc(quizCode)
+    .collection("participants")
+    .get();
+
+  const teamCounts = {};
+  getTeamOptions(teamCount).forEach(team => {
+    teamCounts[team.teamId] = 0;
+  });
+
+  participantsSnapshot.forEach(doc => {
+    const participant = doc.data();
+
+    if (participant.teamId && teamCounts[participant.teamId] !== undefined) {
+      teamCounts[participant.teamId] += 1;
+    }
+  });
+
+  const sortedTeams = Object.entries(teamCounts).sort((a, b) => a[1] - b[1]);
+  const selectedTeamId = sortedTeams[0][0];
+  const selectedTeamName = getTeamOptions(teamCount).find(team => team.teamId === selectedTeamId).teamName;
+
+  return {
+    teamId: selectedTeamId,
+    teamName: selectedTeamName
+  };
+}
+
+function populateTeamChoice(teamCount) {
+  const teamChoiceSelect = document.getElementById("teamChoiceSelect");
+  teamChoiceSelect.innerHTML = "";
+
+  getTeamOptions(teamCount).forEach(team => {
+    const option = document.createElement("option");
+    option.value = team.teamId;
+    option.text = team.teamName;
+    teamChoiceSelect.appendChild(option);
+  });
+}
+
+async function registerParticipant(quizCode, quiz, playerName, teamAssignment) {
   const participantRef = firebase.firestore()
     .collection("quizzes")
     .doc(quizCode)
@@ -62,13 +115,13 @@ async function registerParticipant(quizCode, quiz, playerName) {
     joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
     isHost: false,
     isPartyMode: Boolean(quiz.isPartyMode),
-    teamId: null,
-    teamName: null
+    teamId: teamAssignment ? teamAssignment.teamId : null,
+    teamName: teamAssignment ? teamAssignment.teamName : null
   });
 
   localStorage.setItem("participantId", participantRef.id);
-  localStorage.removeItem("teamId");
-  localStorage.removeItem("teamName");
+  localStorage.setItem("teamId", teamAssignment ? teamAssignment.teamId : "");
+  localStorage.setItem("teamName", teamAssignment ? teamAssignment.teamName : "");
 }
 
 function joinQuiz() {
@@ -80,10 +133,40 @@ function joinQuiz() {
       if (doc.exists) {
         const quiz = doc.data();
         const playerName = document.getElementById("playerName").value.trim();
+        const partySettings = quiz.partySettings || {};
+        const isTeamMode = Boolean(partySettings.teamMode);
+        const isManualTeamChoice = partySettings.teamAssignmentMode === "manual";
+        let teamAssignment = null;
 
         if (quiz.isGroupQuiz && !playerName) {
           alert("Please enter your name to join a group quiz.");
           return;
+        }
+
+        if (isTeamMode) {
+          if (isManualTeamChoice) {
+            const teamChoicePanel = document.getElementById("teamChoicePanel");
+            const existingCode = teamChoicePanel.dataset.quizCode;
+
+            if (teamChoicePanel.classList.contains("hidden") || existingCode !== code) {
+              populateTeamChoice(partySettings.teamCount || 2);
+              teamChoicePanel.dataset.quizCode = code;
+              teamChoicePanel.classList.remove("hidden");
+              alert("Choose a team and click Start Quiz again.");
+              return;
+            }
+
+            const selectedTeamId = document.getElementById("teamChoiceSelect").value;
+            teamAssignment = {
+              teamId: selectedTeamId,
+              teamName: getTeamOptions(partySettings.teamCount || 2)
+                .find(team => team.teamId === selectedTeamId).teamName
+            };
+          } else {
+            teamAssignment = await getAutomaticTeamAssignment(code, partySettings.teamCount || 2);
+          }
+        } else {
+          document.getElementById("teamChoicePanel").classList.add("hidden");
         }
 
         localStorage.setItem("quizData", JSON.stringify(quiz.questions));
@@ -102,7 +185,8 @@ function joinQuiz() {
         await registerParticipant(
           code,
           quiz,
-          playerName || localStorage.getItem("currentUserEmail") || "Guest Player"
+          playerName || localStorage.getItem("currentUserEmail") || "Guest Player",
+          teamAssignment
         );
         window.location.href = "quiz.html";
       } else {

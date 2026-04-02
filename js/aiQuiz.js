@@ -57,6 +57,13 @@ function getPartySettings() {
 }
 
 async function registerHostParticipant(code, isPartyMode, playerName) {
+  const storedPartySettings = JSON.parse(localStorage.getItem("partySettings") || "null");
+  const teamAssignment = storedPartySettings && storedPartySettings.teamMode
+    ? {
+        teamId: "team-1",
+        teamName: "Team 1"
+      }
+    : null;
   const participantRef = firebase.firestore()
     .collection("quizzes")
     .doc(code)
@@ -69,13 +76,13 @@ async function registerHostParticipant(code, isPartyMode, playerName) {
     joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
     isHost: true,
     isPartyMode,
-    teamId: null,
-    teamName: null
+    teamId: teamAssignment ? teamAssignment.teamId : null,
+    teamName: teamAssignment ? teamAssignment.teamName : null
   });
 
   localStorage.setItem("participantId", participantRef.id);
-  localStorage.removeItem("teamId");
-  localStorage.removeItem("teamName");
+  localStorage.setItem("teamId", teamAssignment ? teamAssignment.teamId : "");
+  localStorage.setItem("teamName", teamAssignment ? teamAssignment.teamName : "");
 }
 
 async function generateQuiz() {
