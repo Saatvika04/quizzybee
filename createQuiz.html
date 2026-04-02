@@ -66,6 +66,20 @@
           <input type="checkbox" id="sabotageToggle">
           Collaborative Sabotage
         </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="teamModeToggle">
+          Team Mode
+        </label>
+        <div class="nested-settings hidden" id="teamSettingsPanel">
+          <label for="teamCountSelect" class="settings-inline-label">Number of Teams</label>
+          <select id="teamCountSelect">
+            <option value="2">2 Teams</option>
+            <option value="3">3 Teams</option>
+            <option value="4">4 Teams</option>
+            <option value="5">5 Teams</option>
+            <option value="6">6 Teams</option>
+          </select>
+        </div>
       </div>
 
       <button onclick="addQuestion()">Add Question</button>
@@ -91,18 +105,32 @@ let questions = [];
 const maxOptions = 10;
 
 function getPartySettings() {
+  const teamMode = document.getElementById("teamModeToggle").checked;
+
   return {
     leaderboard: document.getElementById("leaderboardToggle").checked,
     aggressiveTimer: document.getElementById("aggressiveTimerToggle").checked,
     screenShrink: document.getElementById("screenShrinkToggle").checked,
     lowBatteryWarning: document.getElementById("lowBatteryWarningToggle").checked,
-    sabotage: document.getElementById("sabotageToggle").checked
+    sabotage: document.getElementById("sabotageToggle").checked,
+    teamMode,
+    teamCount: teamMode ? Number(document.getElementById("teamCountSelect").value) : null
   };
 }
 
 function togglePartySettingsPanel() {
   const isPartyMode = document.getElementById("partyModeToggle").checked;
   document.getElementById("partySettingsPanel").classList.toggle("hidden", !isPartyMode);
+
+  if (!isPartyMode) {
+    document.getElementById("teamSettingsPanel").classList.add("hidden");
+  }
+}
+
+function toggleTeamSettingsPanel() {
+  const isPartyMode = document.getElementById("partyModeToggle").checked;
+  const isTeamMode = document.getElementById("teamModeToggle").checked;
+  document.getElementById("teamSettingsPanel").classList.toggle("hidden", !(isPartyMode && isTeamMode));
 }
 
 function createOptionInput(value = "") {
@@ -267,7 +295,9 @@ function saveQuiz() {
 }
 
 document.getElementById("partyModeToggle").addEventListener("change", togglePartySettingsPanel);
+document.getElementById("teamModeToggle").addEventListener("change", toggleTeamSettingsPanel);
 togglePartySettingsPanel();
+toggleTeamSettingsPanel();
 resetQuestionForm();
 </script>
 

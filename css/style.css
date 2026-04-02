@@ -289,6 +289,19 @@ button:disabled {
   color: var(--bee-ink);
 }
 
+.nested-settings {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(111, 90, 30, 0.18);
+}
+
+.settings-inline-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: var(--bee-ink);
+}
+
 .hidden {
   display: none;
 }

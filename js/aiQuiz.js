@@ -41,12 +41,16 @@ function generateCode() {
 }
 
 function getPartySettings() {
+  const teamMode = document.getElementById("teamModeToggle").checked;
+
   return {
     leaderboard: document.getElementById("leaderboardToggle").checked,
     aggressiveTimer: document.getElementById("aggressiveTimerToggle").checked,
     screenShrink: document.getElementById("screenShrinkToggle").checked,
     lowBatteryWarning: document.getElementById("lowBatteryWarningToggle").checked,
-    sabotage: document.getElementById("sabotageToggle").checked
+    sabotage: document.getElementById("sabotageToggle").checked,
+    teamMode,
+    teamCount: teamMode ? Number(document.getElementById("teamCountSelect").value) : null
   };
 }
 
