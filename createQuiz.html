@@ -40,6 +40,10 @@
         <input type="checkbox" id="groupQuizToggle">
         Group Quiz
       </label>
+      <label class="toggle-label">
+        <input type="checkbox" id="partyModeToggle">
+        Party Mode
+      </label>
 
       <button onclick="addQuestion()">Add Question</button>
       <button onclick="saveQuiz()">Save Quiz</button>
@@ -207,15 +211,19 @@ function saveQuiz() {
   const db = firebase.firestore();
   const code = generateCode();
   const isGroupQuiz = document.getElementById("groupQuizToggle").checked;
+  const isPartyMode = document.getElementById("partyModeToggle").checked;
 
   db.collection("quizzes").doc(code).set({
     questions: questions,
     isGroupQuiz: isGroupQuiz,
+    isPartyMode: isPartyMode,
     createdBy: localStorage.getItem("currentUserEmail") || "Unknown creator"
   });
 
   document.getElementById("quizCode").innerText =
-    "Quiz Code: " + code + (isGroupQuiz ? " (Group quiz enabled)" : "");
+    "Quiz Code: " + code
+    + (isGroupQuiz ? " (Group quiz enabled)" : "")
+    + (isPartyMode ? " (Party mode enabled)" : "");
 }
 
 resetQuestionForm();

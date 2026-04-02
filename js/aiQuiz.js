@@ -44,6 +44,7 @@ async function generateQuiz() {
   const topic = document.getElementById("topic").value.trim();
   const generateButton = document.getElementById("generateButton");
   const isGroupQuiz = document.getElementById("groupQuizToggle").checked;
+  const isPartyMode = document.getElementById("partyModeToggle").checked;
 
   if (!topic) {
     setStatus("Please enter a topic first.");
@@ -77,16 +78,19 @@ async function generateQuiz() {
         topic,
         questions,
         isGroupQuiz: true,
+        isPartyMode,
         createdBy: localStorage.getItem("currentUserEmail") || "Unknown creator"
       });
 
       localStorage.setItem("quizCode", code);
       localStorage.setItem("isGroupQuiz", "true");
+      localStorage.setItem("isPartyMode", String(isPartyMode));
       localStorage.setItem("playerName", localStorage.getItem("currentUserEmail") || "Quiz Host");
       alert(`Group quiz created. Share this code: ${code}`);
     } else {
       localStorage.removeItem("quizCode");
       localStorage.setItem("isGroupQuiz", "false");
+      localStorage.setItem("isPartyMode", String(isPartyMode));
       localStorage.removeItem("playerName");
     }
 
