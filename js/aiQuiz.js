@@ -51,7 +51,8 @@ function getPartySettings() {
     sabotage: document.getElementById("sabotageToggle").checked,
     teamMode,
     teamCount: teamMode ? Number(document.getElementById("teamCountSelect").value) : null,
-    teamAssignmentMode: teamMode ? document.getElementById("teamAssignmentModeSelect").value : null
+    teamAssignmentMode: teamMode ? document.getElementById("teamAssignmentModeSelect").value : null,
+    enforceBalancedTeams: teamMode ? document.getElementById("balancedTeamsToggle").checked : null
   };
 }
 

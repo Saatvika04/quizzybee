@@ -84,6 +84,10 @@
             <option value="auto">Automatic Assignment</option>
             <option value="manual">Players Choose Their Team</option>
           </select>
+          <label class="toggle-label">
+            <input type="checkbox" id="balancedTeamsToggle" checked>
+            Require Equal or Almost Equal Teams
+          </label>
         </div>
       </div>
 
@@ -120,7 +124,8 @@ function getPartySettings() {
     sabotage: document.getElementById("sabotageToggle").checked,
     teamMode,
     teamCount: teamMode ? Number(document.getElementById("teamCountSelect").value) : null,
-    teamAssignmentMode: teamMode ? document.getElementById("teamAssignmentModeSelect").value : null
+    teamAssignmentMode: teamMode ? document.getElementById("teamAssignmentModeSelect").value : null,
+    enforceBalancedTeams: teamMode ? document.getElementById("balancedTeamsToggle").checked : null
   };
 }
 
