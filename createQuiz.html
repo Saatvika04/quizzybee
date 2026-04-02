@@ -44,6 +44,29 @@
         <input type="checkbox" id="partyModeToggle">
         Party Mode
       </label>
+      <div class="settings-panel hidden" id="partySettingsPanel">
+        <p class="settings-title">Party Settings</p>
+        <label class="toggle-label">
+          <input type="checkbox" id="leaderboardToggle" checked>
+          Leaderboard
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="aggressiveTimerToggle">
+          Aggressive Timer
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="screenShrinkToggle">
+          Screen Shrink
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="lowBatteryWarningToggle">
+          Low Battery Warning
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="sabotageToggle">
+          Collaborative Sabotage
+        </label>
+      </div>
 
       <button onclick="addQuestion()">Add Question</button>
       <button onclick="saveQuiz()">Save Quiz</button>
@@ -66,6 +89,21 @@ renderTopbarProfile();
 
 let questions = [];
 const maxOptions = 10;
+
+function getPartySettings() {
+  return {
+    leaderboard: document.getElementById("leaderboardToggle").checked,
+    aggressiveTimer: document.getElementById("aggressiveTimerToggle").checked,
+    screenShrink: document.getElementById("screenShrinkToggle").checked,
+    lowBatteryWarning: document.getElementById("lowBatteryWarningToggle").checked,
+    sabotage: document.getElementById("sabotageToggle").checked
+  };
+}
+
+function togglePartySettingsPanel() {
+  const isPartyMode = document.getElementById("partyModeToggle").checked;
+  document.getElementById("partySettingsPanel").classList.toggle("hidden", !isPartyMode);
+}
 
 function createOptionInput(value = "") {
   const optionRow = document.createElement("div");
@@ -212,11 +250,13 @@ function saveQuiz() {
   const code = generateCode();
   const isGroupQuiz = document.getElementById("groupQuizToggle").checked;
   const isPartyMode = document.getElementById("partyModeToggle").checked;
+  const partySettings = isPartyMode ? getPartySettings() : null;
 
   db.collection("quizzes").doc(code).set({
     questions: questions,
     isGroupQuiz: isGroupQuiz,
     isPartyMode: isPartyMode,
+    partySettings: partySettings,
     createdBy: localStorage.getItem("currentUserEmail") || "Unknown creator"
   });
 
@@ -226,6 +266,8 @@ function saveQuiz() {
     + (isPartyMode ? " (Party mode enabled)" : "");
 }
 
+document.getElementById("partyModeToggle").addEventListener("change", togglePartySettingsPanel);
+togglePartySettingsPanel();
 resetQuestionForm();
 </script>
 

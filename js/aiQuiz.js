@@ -40,11 +40,22 @@ function generateCode() {
   return Math.random().toString(36).substring(2, 8);
 }
 
+function getPartySettings() {
+  return {
+    leaderboard: document.getElementById("leaderboardToggle").checked,
+    aggressiveTimer: document.getElementById("aggressiveTimerToggle").checked,
+    screenShrink: document.getElementById("screenShrinkToggle").checked,
+    lowBatteryWarning: document.getElementById("lowBatteryWarningToggle").checked,
+    sabotage: document.getElementById("sabotageToggle").checked
+  };
+}
+
 async function generateQuiz() {
   const topic = document.getElementById("topic").value.trim();
   const generateButton = document.getElementById("generateButton");
   const isGroupQuiz = document.getElementById("groupQuizToggle").checked;
   const isPartyMode = document.getElementById("partyModeToggle").checked;
+  const partySettings = isPartyMode ? getPartySettings() : null;
 
   if (!topic) {
     setStatus("Please enter a topic first.");
@@ -79,18 +90,21 @@ async function generateQuiz() {
         questions,
         isGroupQuiz: true,
         isPartyMode,
+        partySettings,
         createdBy: localStorage.getItem("currentUserEmail") || "Unknown creator"
       });
 
       localStorage.setItem("quizCode", code);
       localStorage.setItem("isGroupQuiz", "true");
       localStorage.setItem("isPartyMode", String(isPartyMode));
+      localStorage.setItem("partySettings", JSON.stringify(partySettings));
       localStorage.setItem("playerName", localStorage.getItem("currentUserEmail") || "Quiz Host");
       alert(`Group quiz created. Share this code: ${code}`);
     } else {
       localStorage.removeItem("quizCode");
       localStorage.setItem("isGroupQuiz", "false");
       localStorage.setItem("isPartyMode", String(isPartyMode));
+      localStorage.setItem("partySettings", JSON.stringify(partySettings));
       localStorage.removeItem("playerName");
     }
 

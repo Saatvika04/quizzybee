@@ -41,6 +41,29 @@
           <input type="checkbox" id="partyModeToggle">
           Party Mode
         </label>
+        <div class="settings-panel hidden" id="partySettingsPanel">
+          <p class="settings-title">Party Settings</p>
+          <label class="toggle-label">
+            <input type="checkbox" id="leaderboardToggle" checked>
+            Leaderboard
+          </label>
+          <label class="toggle-label">
+            <input type="checkbox" id="aggressiveTimerToggle">
+            Aggressive Timer
+          </label>
+          <label class="toggle-label">
+            <input type="checkbox" id="screenShrinkToggle">
+            Screen Shrink
+          </label>
+          <label class="toggle-label">
+            <input type="checkbox" id="lowBatteryWarningToggle">
+            Low Battery Warning
+          </label>
+          <label class="toggle-label">
+            <input type="checkbox" id="sabotageToggle">
+            Collaborative Sabotage
+          </label>
+        </div>
         <button id="generateButton" onclick="generateQuiz()">Generate Quiz</button>
         <p id="status"></p>
       </main>
@@ -54,6 +77,14 @@
   <script src="js/session.js"></script>
   <script>
     renderTopbarProfile();
+
+    function togglePartySettingsPanel() {
+      const isPartyMode = document.getElementById("partyModeToggle").checked;
+      document.getElementById("partySettingsPanel").classList.toggle("hidden", !isPartyMode);
+    }
+
+    document.getElementById("partyModeToggle").addEventListener("change", togglePartySettingsPanel);
+    togglePartySettingsPanel();
   </script>
   <script src="js/aiQuiz.js"></script>
 </body>

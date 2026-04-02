@@ -68,6 +68,7 @@ function joinQuiz() {
         localStorage.setItem("quizCode", code);
         localStorage.setItem("isGroupQuiz", String(Boolean(quiz.isGroupQuiz)));
         localStorage.setItem("isPartyMode", String(Boolean(quiz.isPartyMode)));
+        localStorage.setItem("partySettings", JSON.stringify(quiz.partySettings || null));
         localStorage.removeItem("score");
         localStorage.removeItem("totalPoints");
         localStorage.removeItem("attemptDetails");
