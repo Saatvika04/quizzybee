@@ -40,30 +40,7 @@ function generateCode() {
   return Math.random().toString(36).substring(2, 8);
 }
 
-function getPartySettings() {
-  const teamMode = document.getElementById("teamModeToggle").checked;
-
-  return {
-    leaderboard: document.getElementById("leaderboardToggle").checked,
-    aggressiveTimer: document.getElementById("aggressiveTimerToggle").checked,
-    screenShrink: document.getElementById("screenShrinkToggle").checked,
-    lowBatteryWarning: document.getElementById("lowBatteryWarningToggle").checked,
-    sabotage: document.getElementById("sabotageToggle").checked,
-    teamMode,
-    teamCount: teamMode ? Number(document.getElementById("teamCountSelect").value) : null,
-    teamAssignmentMode: teamMode ? document.getElementById("teamAssignmentModeSelect").value : null,
-    enforceBalancedTeams: teamMode ? document.getElementById("balancedTeamsToggle").checked : null
-  };
-}
-
-async function registerHostParticipant(code, isPartyMode, playerName) {
-  const storedPartySettings = JSON.parse(localStorage.getItem("partySettings") || "null");
-  const teamAssignment = storedPartySettings && storedPartySettings.teamMode
-    ? {
-        teamId: "team-1",
-        teamName: "Team 1"
-      }
-    : null;
+async function registerHostParticipant(code, playerName) {
   const participantRef = firebase.firestore()
     .collection("quizzes")
     .doc(code)
@@ -75,22 +52,20 @@ async function registerHostParticipant(code, isPartyMode, playerName) {
     playerEmail: localStorage.getItem("currentUserEmail") || "",
     joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
     isHost: true,
-    isPartyMode,
-    teamId: teamAssignment ? teamAssignment.teamId : null,
-    teamName: teamAssignment ? teamAssignment.teamName : null
+    isPartyMode: false,
+    teamId: null,
+    teamName: null
   });
 
   localStorage.setItem("participantId", participantRef.id);
-  localStorage.setItem("teamId", teamAssignment ? teamAssignment.teamId : "");
-  localStorage.setItem("teamName", teamAssignment ? teamAssignment.teamName : "");
+  localStorage.removeItem("teamId");
+  localStorage.removeItem("teamName");
 }
 
 async function generateQuiz() {
   const topic = document.getElementById("topic").value.trim();
   const generateButton = document.getElementById("generateButton");
   const isGroupQuiz = document.getElementById("groupQuizToggle").checked;
-  const isPartyMode = document.getElementById("partyModeToggle").checked;
-  const partySettings = isPartyMode ? getPartySettings() : null;
 
   if (!topic) {
     setStatus("Please enter a topic first.");
@@ -124,27 +99,23 @@ async function generateQuiz() {
         topic,
         questions,
         isGroupQuiz: true,
-        isPartyMode,
-        partySettings,
+        isPartyMode: false,
+        partySettings: null,
         createdBy: localStorage.getItem("currentUserEmail") || "Unknown creator"
       });
 
       localStorage.setItem("quizCode", code);
       localStorage.setItem("isGroupQuiz", "true");
-      localStorage.setItem("isPartyMode", String(isPartyMode));
-      localStorage.setItem("partySettings", JSON.stringify(partySettings));
+      localStorage.setItem("isPartyMode", "false");
+      localStorage.removeItem("partySettings");
       localStorage.setItem("playerName", localStorage.getItem("currentUserEmail") || "Quiz Host");
-      await registerHostParticipant(
-        code,
-        isPartyMode,
-        localStorage.getItem("currentUserEmail") || "Quiz Host"
-      );
+      await registerHostParticipant(code, localStorage.getItem("currentUserEmail") || "Quiz Host");
       alert(`Group quiz created. Share this code: ${code}`);
     } else {
       localStorage.removeItem("quizCode");
       localStorage.setItem("isGroupQuiz", "false");
-      localStorage.setItem("isPartyMode", String(isPartyMode));
-      localStorage.setItem("partySettings", JSON.stringify(partySettings));
+      localStorage.setItem("isPartyMode", "false");
+      localStorage.removeItem("partySettings");
       localStorage.removeItem("participantId");
       localStorage.removeItem("teamId");
       localStorage.removeItem("teamName");

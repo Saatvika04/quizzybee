@@ -13,6 +13,7 @@
     <a class="nav-link" href="createQuiz.html">Create Quiz</a>
     <a class="nav-link" href="joinQuiz.html">Join Quiz</a>
     <a class="nav-link" href="generateQuiz.html">AI Quiz</a>
+    <a class="nav-link" href="partyMode.html">Party Mode</a>
   </aside>
   <div class="page-shell">
     <header class="topbar">
@@ -34,6 +35,7 @@
       <button onclick="goToCreateQuiz()">Create Quiz</button>
       <button onclick="goToJoinQuiz()">Join Quiz</button>
       <button onclick="goToAiQuiz()">AI Generated Quiz</button>
+      <button onclick="goToPartyMode()">Party Mode</button>
 
       <button onclick="logout()">Logout</button>
     </main>
@@ -79,6 +81,11 @@ function goToJoinQuiz() {
 function goToAiQuiz() {
   resetQuizSession();
   window.location.href = "generateQuiz.html";
+}
+
+function goToPartyMode() {
+  resetQuizSession();
+  window.location.href = "partyMode.html";
 }
 
 function logout() {

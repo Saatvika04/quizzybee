@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Create Quiz</title>
+  <title>Party Mode</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -10,16 +10,16 @@
   <aside class="sidebar">
     <div class="sidebar-brand">QuizzyBee</div>
     <a class="nav-link" href="dashboard.html">Dashboard</a>
-    <a class="nav-link active" href="createQuiz.html">Create Quiz</a>
+    <a class="nav-link" href="createQuiz.html">Create Quiz</a>
     <a class="nav-link" href="joinQuiz.html">Join Quiz</a>
     <a class="nav-link" href="generateQuiz.html">AI Quiz</a>
-    <a class="nav-link" href="partyMode.html">Party Mode</a>
+    <a class="nav-link active" href="partyMode.html">Party Mode</a>
   </aside>
   <div class="page-shell">
     <header class="topbar">
       <div>
-        <div class="topbar-title">Create Quiz</div>
-        <div class="topbar-subtitle">Build your own classic quiz room</div>
+        <div class="topbar-title">Party Mode</div>
+        <div class="topbar-subtitle">Build a live quiz room with party rules and leaderboards</div>
       </div>
       <div class="topbar-profile">
         <div class="topbar-profile-avatar" data-topbar-avatar>U</div>
@@ -30,31 +30,72 @@
       </div>
     </header>
     <main class="page-content">
-      <h2>Create Quiz</h2>
+      <h2>Party Mode</h2>
 
       <input id="question" placeholder="Enter question">
       <div id="optionsContainer"></div>
       <button type="button" onclick="addOptionInput()">Add Option</button>
 
       <select id="answer"></select>
-      <label class="toggle-label">
-        <input type="checkbox" id="groupQuizToggle">
-        Group Quiz
-      </label>
+
+      <div class="settings-panel" id="partySettingsPanel">
+        <p class="settings-title">Party Settings</p>
+        <label class="toggle-label">
+          <input type="checkbox" id="leaderboardToggle" checked>
+          Leaderboard
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="aggressiveTimerToggle">
+          Aggressive Timer
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="screenShrinkToggle">
+          Screen Shrink
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="lowBatteryWarningToggle">
+          Low Battery Warning
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="sabotageToggle">
+          Collaborative Sabotage
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="teamModeToggle">
+          Team Mode
+        </label>
+        <div class="nested-settings hidden" id="teamSettingsPanel">
+          <label for="teamCountSelect" class="settings-inline-label">Number of Teams</label>
+          <select id="teamCountSelect">
+            <option value="2">2 Teams</option>
+            <option value="3">3 Teams</option>
+            <option value="4">4 Teams</option>
+            <option value="5">5 Teams</option>
+            <option value="6">6 Teams</option>
+          </select>
+          <label for="teamAssignmentModeSelect" class="settings-inline-label">Team Assignment</label>
+          <select id="teamAssignmentModeSelect">
+            <option value="auto">Automatic Assignment</option>
+            <option value="manual">Players Choose Their Team</option>
+          </select>
+          <label class="toggle-label">
+            <input type="checkbox" id="balancedTeamsToggle" checked>
+            Require Equal or Almost Equal Teams
+          </label>
+        </div>
+      </div>
 
       <button onclick="addQuestion()">Add Question</button>
-      <button onclick="saveQuiz()">Save Quiz</button>
+      <button onclick="savePartyQuiz()">Create Party Room</button>
 
       <p id="quizCode"></p>
     </main>
   </div>
 </div>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-
 <script src="js/firebase.js"></script>
 <script src="js/session.js"></script>
 
@@ -63,6 +104,27 @@ renderTopbarProfile();
 
 let questions = [];
 const maxOptions = 10;
+
+function getPartySettings() {
+  const teamMode = document.getElementById("teamModeToggle").checked;
+
+  return {
+    leaderboard: document.getElementById("leaderboardToggle").checked,
+    aggressiveTimer: document.getElementById("aggressiveTimerToggle").checked,
+    screenShrink: document.getElementById("screenShrinkToggle").checked,
+    lowBatteryWarning: document.getElementById("lowBatteryWarningToggle").checked,
+    sabotage: document.getElementById("sabotageToggle").checked,
+    teamMode,
+    teamCount: teamMode ? Number(document.getElementById("teamCountSelect").value) : null,
+    teamAssignmentMode: teamMode ? document.getElementById("teamAssignmentModeSelect").value : null,
+    enforceBalancedTeams: teamMode ? document.getElementById("balancedTeamsToggle").checked : null
+  };
+}
+
+function toggleTeamSettingsPanel() {
+  const isTeamMode = document.getElementById("teamModeToggle").checked;
+  document.getElementById("teamSettingsPanel").classList.toggle("hidden", !isTeamMode);
+}
 
 function createOptionInput(value = "") {
   const optionRow = document.createElement("div");
@@ -184,13 +246,12 @@ function addQuestion() {
     return;
   }
 
-  const q = {
+  questions.push({
     question: questionText,
     options: optionValues,
-    answer: answer
-  };
+    answer
+  });
 
-  questions.push(q);
   alert("Question added!");
   resetQuestionForm();
 }
@@ -199,28 +260,28 @@ function generateCode() {
   return Math.random().toString(36).substring(2, 8);
 }
 
-function saveQuiz() {
+function savePartyQuiz() {
   if (questions.length === 0) {
-    alert("Please add at least one question before saving.");
+    alert("Please add at least one question before creating the party room.");
     return;
   }
 
   const db = firebase.firestore();
   const code = generateCode();
-  const isGroupQuiz = document.getElementById("groupQuizToggle").checked;
 
   db.collection("quizzes").doc(code).set({
-    questions: questions,
-    isGroupQuiz: isGroupQuiz,
-    isPartyMode: false,
-    partySettings: null,
+    questions,
+    isGroupQuiz: true,
+    isPartyMode: true,
+    partySettings: getPartySettings(),
     createdBy: localStorage.getItem("currentUserEmail") || "Unknown creator"
   });
 
-  document.getElementById("quizCode").innerText =
-    "Quiz Code: " + code
-    + (isGroupQuiz ? " (Group quiz enabled)" : "");
+  document.getElementById("quizCode").innerText = `Party Room Code: ${code}`;
 }
+
+document.getElementById("teamModeToggle").addEventListener("change", toggleTeamSettingsPanel);
+toggleTeamSettingsPanel();
 resetQuestionForm();
 </script>
 
