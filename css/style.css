@@ -69,52 +69,95 @@ body {
   width: 230px;
   padding: 10px 10px 18px;
   border-right: 2px solid var(--chrome-border);
-  background: linear-gradient(180deg, #f0dfc4 0%, #e4cba9 100%);
+  background: #f6e6a9;
   box-shadow:
     inset 1px 1px 0 var(--chrome-highlight),
-    inset -1px -1px 0 #96876a;
+    inset -1px -1px 0 #b4a17c;
 }
 
 .sidebar-brand {
   margin-bottom: 14px;
   padding: 8px 10px;
   border: 2px solid var(--chrome-border);
-  background: #f7e8d2;
+  background: #ffd2dd;
   box-shadow:
     inset 1px 1px 0 var(--chrome-highlight),
-    inset -1px -1px 0 #a18c6c;
+    inset -1px -1px 0 #b99c43;
   font-size: 23px;
   font-weight: bold;
-  color: var(--deep-sea);
+  color: #0d3d4d;
 }
 
 .nav-link {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   padding: 10px 12px;
-  border: 2px solid transparent;
+  border: 2px solid #9f9073;
   color: var(--bee-ink);
   text-decoration: none;
   font-weight: bold;
   text-align: left;
   box-shadow:
-    inset 1px 1px 0 transparent,
-    inset -1px -1px 0 transparent;
-  transition: background 0.1s ease;
+    inset 1px 1px 0 rgba(255, 255, 255, 0.75),
+    inset -1px -1px 0 rgba(120, 100, 60, 0.55),
+    1px 1px 0 rgba(190, 172, 128, 0.95);
+  transition:
+    background 0.1s ease,
+    box-shadow 0.1s ease,
+    transform 0.1s ease;
 }
 
 .nav-link:hover {
-  background: rgba(127, 199, 204, 0.22);
-  border-color: #97a699;
+  filter: brightness(1.03);
   cursor: var(--cursor-pointer);
 }
 
 .nav-link.active {
-  background: rgba(75, 91, 52, 0.2);
-  border-color: #6f7c5f;
+  border-color: #7f755a;
   box-shadow:
-    inset 1px 1px 0 #f6f1e5,
-    inset -1px -1px 0 #6f7c5f;
+    inset -2px -2px 0 rgba(255, 255, 255, 0.5),
+    inset 2px 2px 0 rgba(105, 92, 56, 0.75);
+  transform: translate(1px, 1px);
+}
+
+.sidebar .nav-link:nth-of-type(1) {
+  background: #f6e6a9;
+}
+
+.sidebar .nav-link:nth-of-type(2) {
+  background: #ffd6a8;
+}
+
+.sidebar .nav-link:nth-of-type(3) {
+  background: #bfe4f2;
+}
+
+.sidebar .nav-link:nth-of-type(4) {
+  background: #ffd2dd;
+}
+
+.sidebar .nav-link:nth-of-type(5) {
+  background: #d4e2b8;
+}
+
+.sidebar .nav-link.active:nth-of-type(1) {
+  background: #ebd88f;
+}
+
+.sidebar .nav-link.active:nth-of-type(2) {
+  background: #f2c28d;
+}
+
+.sidebar .nav-link.active:nth-of-type(3) {
+  background: #a9d4e5;
+}
+
+.sidebar .nav-link.active:nth-of-type(4) {
+  background: #f0b9c8;
+}
+
+.sidebar .nav-link.active:nth-of-type(5) {
+  background: #c2d29d;
 }
 
 .page-shell {
