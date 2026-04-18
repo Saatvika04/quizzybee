@@ -33,6 +33,15 @@
       <h2>Party Mode</h2>
 
       <input id="question" placeholder="Enter question">
+      <div class="image-upload-panel">
+        <label for="questionImage" class="settings-inline-label">Optional Question Image</label>
+        <input id="questionImage" type="file" accept="image/*" onchange="handleQuestionImageChange(event)">
+        <p class="image-upload-hint">Add a photo only if this question needs one.</p>
+        <div class="image-preview hidden" id="questionImagePreviewWrap">
+          <img id="questionImagePreview" alt="Selected question preview">
+          <button type="button" onclick="clearQuestionImage()">Remove Image</button>
+        </div>
+      </div>
       <div id="optionsContainer"></div>
       <button type="button" onclick="addOptionInput()">Add Option</button>
 
@@ -96,6 +105,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script src="js/firebase.js"></script>
 <script src="js/session.js"></script>
 
@@ -104,6 +114,7 @@ renderTopbarProfile();
 
 let questions = [];
 const maxOptions = 10;
+const maxImageSizeBytes = 3 * 1024 * 1024;
 
 function getPartySettings() {
   const teamMode = document.getElementById("teamModeToggle").checked;
@@ -216,20 +227,86 @@ function updateAnswerOptions() {
   });
 }
 
+function getQuestionImageInput() {
+  return document.getElementById("questionImage");
+}
+
+function getQuestionImagePreviewWrap() {
+  return document.getElementById("questionImagePreviewWrap");
+}
+
+function getQuestionImagePreview() {
+  return document.getElementById("questionImagePreview");
+}
+
+function handleQuestionImageChange(event) {
+  const [file] = event.target.files || [];
+
+  if (!file) {
+    clearQuestionImagePreview();
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    alert("Please choose an image file.");
+    clearQuestionImage();
+    return;
+  }
+
+  if (file.size > maxImageSizeBytes) {
+    alert("Please choose an image smaller than 3 MB.");
+    clearQuestionImage();
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    getQuestionImagePreview().src = reader.result;
+    getQuestionImagePreviewWrap().classList.remove("hidden");
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearQuestionImagePreview() {
+  getQuestionImagePreview().src = "";
+  getQuestionImagePreviewWrap().classList.add("hidden");
+}
+
+function clearQuestionImage() {
+  getQuestionImageInput().value = "";
+  clearQuestionImagePreview();
+}
+
+async function uploadQuestionImage(file) {
+  const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+  const storagePath = [
+    "quiz-question-images",
+    Date.now(),
+    Math.random().toString(36).slice(2, 8),
+    safeFileName
+  ].join("-");
+
+  const storageRef = firebase.storage().ref().child(storagePath);
+  await storageRef.put(file);
+  return storageRef.getDownloadURL();
+}
+
 function resetQuestionForm() {
   document.getElementById("question").value = "";
   document.getElementById("optionsContainer").innerHTML = "";
+  clearQuestionImage();
   createOptionInput();
   createOptionInput();
   updateAnswerOptions();
 }
 
-function addQuestion() {
+async function addQuestion() {
   const questionText = document.getElementById("question").value.trim();
   const optionValues = Array.from(document.querySelectorAll(".quiz-option-input"))
     .map(input => input.value.trim())
     .filter(Boolean);
   const answer = document.getElementById("answer").value;
+  const imageFile = getQuestionImageInput().files[0];
 
   if (!questionText) {
     alert("Please enter a question.");
@@ -246,14 +323,25 @@ function addQuestion() {
     return;
   }
 
-  questions.push({
-    question: questionText,
-    options: optionValues,
-    answer
-  });
+  try {
+    let imageUrl = "";
 
-  alert("Question added!");
-  resetQuestionForm();
+    if (imageFile) {
+      imageUrl = await uploadQuestionImage(imageFile);
+    }
+
+    questions.push({
+      question: questionText,
+      options: optionValues,
+      answer,
+      imageUrl
+    });
+
+    alert("Question added!");
+    resetQuestionForm();
+  } catch (error) {
+    alert(error.message || "Image upload failed. Please try again.");
+  }
 }
 
 function generateCode() {

@@ -354,6 +354,8 @@ function setupLiveEventsListener() {
 
 function loadQuestion() {
   const q = questions[currentQuestion];
+  const questionImageWrap = document.getElementById("questionImageWrap");
+  const questionImage = document.getElementById("questionImage");
 
   if (!q) {
     document.getElementById("question").innerText = "No quiz questions available.";
@@ -362,6 +364,17 @@ function loadQuestion() {
   }
 
   document.getElementById("question").innerText = q.question;
+
+  if (questionImageWrap && questionImage) {
+    if (q.imageUrl) {
+      questionImage.src = q.imageUrl;
+      questionImageWrap.classList.remove("hidden");
+    } else {
+      questionImage.src = "";
+      questionImageWrap.classList.add("hidden");
+    }
+  }
+
   questionStartTime = Date.now();
   clearQuestionEffects();
   maybeShowLowBatteryWarning();
