@@ -12,13 +12,45 @@ module.exports = async function handler(req, res) {
   try {
     const body = typeof req.body === "string" ? JSON.parse(req.body) : (req.body || {});
     const topic = String(body.topic || "").trim();
+    const sourceType = String(body.sourceType || "topic").trim();
+    const studyMaterialText = String(body.studyMaterialText || "").trim();
 
-    if (!topic) {
+    if (sourceType === "studyMaterial" && !studyMaterialText) {
+      res.status(400).json({ error: "Study material text is required." });
+      return;
+    }
+
+    if (sourceType !== "studyMaterial" && !topic) {
       res.status(400).json({ error: "Topic is required." });
       return;
     }
 
     const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+    const promptText = sourceType === "studyMaterial"
+      ? [
+          "Generate a beginner-friendly multiple-choice quiz using only the study material provided below.",
+          "Do not use outside knowledge.",
+          "If the material does not support a fact clearly, do not include it.",
+          "Return only structured quiz data.",
+          "Create exactly 5 questions.",
+          "Each question must have exactly 4 options.",
+          "Each question must have exactly 1 correct answer.",
+          "The answer value must exactly match one of the options.",
+          "Keep the wording clear for students.",
+          "Study material:",
+          studyMaterialText
+        ].join("\n")
+      : [
+          "Generate a beginner-friendly multiple-choice quiz.",
+          `Topic: ${topic}.`,
+          "Return only structured quiz data.",
+          "Create exactly 5 questions.",
+          "Each question must have exactly 4 options.",
+          "Each question must have exactly 1 correct answer.",
+          "The answer value must exactly match one of the options.",
+          "Keep the wording clear for students."
+        ].join(" ");
+
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
       {
@@ -33,16 +65,7 @@ module.exports = async function handler(req, res) {
               role: "user",
               parts: [
                 {
-                  text: [
-                    "Generate a beginner-friendly multiple-choice quiz.",
-                    `Topic: ${topic}.`,
-                    "Return only structured quiz data.",
-                    "Create exactly 5 questions.",
-                    "Each question must have exactly 4 options.",
-                    "Each question must have exactly 1 correct answer.",
-                    "The answer value must exactly match one of the options.",
-                    "Keep the wording clear for students."
-                  ].join(" ")
+                  text: promptText
                 }
               ]
             }
