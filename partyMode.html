@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Party Mode</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -98,6 +99,12 @@
       <button onclick="savePartyQuiz()">Create Party Room</button>
 
       <p id="quizCode"></p>
+      <div class="qr-panel hidden" id="partyQrPanel">
+        <p class="settings-title">Quick Join QR</p>
+        <p class="image-upload-hint">Players can scan this on their phones to open the join page with your party room code already filled in.</p>
+        <div class="qr-code-box" id="partyQrCode"></div>
+        <p class="qr-link-text" id="partyJoinLink"></p>
+      </div>
     </main>
   </div>
 </div>
@@ -106,6 +113,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="js/firebase.js"></script>
 <script src="js/session.js"></script>
 
@@ -348,6 +356,30 @@ function generateCode() {
   return Math.random().toString(36).substring(2, 8);
 }
 
+function getPartyJoinUrl(code) {
+  return `${window.location.origin}/joinQuiz.html?code=${encodeURIComponent(code)}`;
+}
+
+function renderPartyQrCode(code) {
+  const qrPanel = document.getElementById("partyQrPanel");
+  const qrCodeNode = document.getElementById("partyQrCode");
+  const joinLinkNode = document.getElementById("partyJoinLink");
+  const joinUrl = getPartyJoinUrl(code);
+
+  qrCodeNode.innerHTML = "";
+  new QRCode(qrCodeNode, {
+    text: joinUrl,
+    width: 180,
+    height: 180,
+    colorDark: "#183134",
+    colorLight: "#fffdfa",
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  joinLinkNode.innerHTML = `<a href="${joinUrl}">${joinUrl}</a>`;
+  qrPanel.classList.remove("hidden");
+}
+
 function savePartyQuiz() {
   if (questions.length === 0) {
     alert("Please add at least one question before creating the party room.");
@@ -366,6 +398,7 @@ function savePartyQuiz() {
   });
 
   document.getElementById("quizCode").innerText = `Party Room Code: ${code}`;
+  renderPartyQrCode(code);
 }
 
 document.getElementById("teamModeToggle").addEventListener("change", toggleTeamSettingsPanel);

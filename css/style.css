@@ -272,6 +272,7 @@ input,
 select {
   display: block;
   width: min(100%, 360px);
+  max-width: 100%;
   margin: 12px auto;
   padding: 9px 10px;
   border: 2px solid var(--chrome-well-dark);
@@ -294,6 +295,7 @@ select:focus {
 button {
   padding: 9px 16px;
   margin: 10px 6px;
+  max-width: 100%;
   border: 2px solid #9d836f;
   background: linear-gradient(180deg, #f5d2cb 0%, #fdaba5 100%);
   color: var(--bee-ink);
@@ -536,6 +538,7 @@ button:active {
 
 .option-row input {
   margin: 0;
+  width: min(100%, 300px);
 }
 
 .remove-option-button {
@@ -650,6 +653,44 @@ button:active {
   margin: 0 auto 18px;
 }
 
+.qr-panel {
+  width: min(100%, 420px);
+  margin: 18px auto 0;
+  padding: 14px 16px;
+  border: 2px solid var(--chrome-border);
+  background: rgba(191, 228, 242, 0.26);
+  box-shadow:
+    inset 1px 1px 0 var(--chrome-highlight),
+    inset -1px -1px 0 #c5b28a;
+}
+
+.qr-code-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  margin-top: 12px;
+}
+
+.qr-code-box img,
+.qr-code-box canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  padding: 10px;
+  border: 2px solid var(--chrome-border);
+  background: #fffdfa;
+  box-shadow:
+    inset 1px 1px 0 var(--chrome-highlight),
+    inset -1px -1px 0 #c5b28a;
+}
+
+.qr-link-text {
+  margin: 12px 0 0;
+  font-size: 12px;
+  word-break: break-all;
+}
+
 .hidden {
   display: none;
 }
@@ -662,11 +703,7 @@ summary {
   cursor: var(--cursor-pointer);
 }
 
-@media (max-width: 480px) {
-  body {
-    padding: 0;
-  }
-
+@media (max-width: 900px) {
   .app-shell {
     flex-direction: column;
   }
@@ -675,22 +712,49 @@ summary {
     width: 100%;
     border-right: 0;
     border-bottom: 2px solid var(--chrome-border);
-    padding: 18px 14px 12px;
+    padding: 12px;
+  }
+
+  .sidebar-brand {
+    margin-bottom: 10px;
+  }
+
+  .nav-link {
+    margin-bottom: 8px;
+  }
+
+  .page-content {
+    width: calc(100% - 20px);
+    margin: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 0;
+  }
+
+  .sidebar {
+    padding: 10px;
   }
 
   .nav-link {
     text-align: center;
+    width: 100%;
+    padding: 12px 10px;
   }
 
   .topbar {
     flex-direction: column;
     text-align: center;
-    padding: 18px 16px;
+    align-items: stretch;
+    padding: 14px 12px;
   }
 
   .topbar-profile {
     width: 100%;
     justify-content: center;
+    gap: 8px;
   }
 
   .topbar-profile-text {
@@ -698,11 +762,83 @@ summary {
   }
 
   .page-content {
-    padding: 28px 16px 40px;
-    margin: 10px;
+    width: calc(100% - 12px);
+    padding: 20px 12px 28px;
+    margin: 6px;
+  }
+
+  input,
+  select,
+  button,
+  #options button {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
   }
 
   .option-row {
+    align-items: stretch;
     gap: 6px;
+    width: 100%;
+  }
+
+  .option-row input {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .remove-option-button {
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .speech-panel,
+  .party-status,
+  .party-controls,
+  .settings-panel,
+  .image-upload-panel,
+  .qr-panel,
+  #leaderboardSection,
+  #teamLeaderboardSection {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .speech-actions,
+  .party-actions {
+    flex-direction: column;
+  }
+
+  .speech-actions button,
+  .party-actions button {
+    width: 100%;
+  }
+
+  .toggle-label,
+  .speech-toggle {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .question-image-wrap img,
+  .image-preview img {
+    width: 100%;
+    max-height: 220px;
+  }
+
+  .overlay {
+    padding: 20px;
+    text-align: center;
+    font-size: 28px;
+  }
+
+  .battery-overlay {
+    font-size: 24px;
+  }
+
+  #leaderboard,
+  #teamLeaderboard {
+    padding-left: 18px;
   }
 }

@@ -55,6 +55,17 @@
 <script>
 renderTopbarProfile();
 
+function applyCodeFromQuery() {
+  const params = new URLSearchParams(window.location.search);
+  const codeFromQuery = params.get("code");
+
+  if (!codeFromQuery) {
+    return;
+  }
+
+  document.getElementById("code").value = codeFromQuery.trim();
+}
+
 async function getTeamCounts(quizCode, teamCount) {
   const participantsSnapshot = await firebase.firestore()
     .collection("quizzes")
@@ -151,7 +162,7 @@ async function registerParticipant(quizCode, quiz, playerName, teamAssignment) {
 }
 
 function joinQuiz() {
-  const code = document.getElementById("code").value;
+  const code = document.getElementById("code").value.trim();
   const db = firebase.firestore();
 
   db.collection("quizzes").doc(code).get()
@@ -239,6 +250,8 @@ function joinQuiz() {
       }
     });
 }
+
+applyCodeFromQuery();
 </script>
 
 </body>
