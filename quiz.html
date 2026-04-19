@@ -32,6 +32,19 @@
     </header>
     <main class="page-content">
       <div class="team-badge hidden" id="teamBadge"></div>
+      <div class="speech-panel" id="speechPanel">
+        <p class="speech-panel-title">Buzz-to-Speech</p>
+        <p class="speech-panel-copy">Read the question aloud for young learners and players who need audio support.</p>
+        <div class="speech-actions">
+          <button type="button" id="readQuestionButton">Read Question</button>
+          <button type="button" id="stopSpeechButton">Stop Reading</button>
+        </div>
+        <label class="toggle-label speech-toggle">
+          <input type="checkbox" id="autoReadToggle">
+          Auto-read each new question
+        </label>
+        <p class="speech-status" id="speechStatus" aria-live="polite"></p>
+      </div>
       <div class="party-status hidden" id="partyStatus">
         <div class="timer-track hidden" id="timerTrack">
           <div class="timer-fill" id="timerFill"></div>

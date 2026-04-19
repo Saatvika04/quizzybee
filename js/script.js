@@ -19,11 +19,14 @@ let activeEffects = {
 let processedEventIds = new Set();
 let liveEventsUnsubscribe = null;
 let participantsUnsubscribe = null;
+let speechSynthesisSupported = false;
+let selectedSpeechVoice = null;
 
 const AGGRESSIVE_TIMER_MS = 12000;
 const LOW_BATTERY_WARNING_MS = 8000;
 const FLASHBANG_DURATION_MS = 3000;
 const INVERT_DURATION_MS = 8000;
+const SPEECH_SETTINGS_KEY = "buzzToSpeechAutoRead";
 
 function getStoredQuestions() {
   try {
@@ -74,6 +77,151 @@ function getQuizCode() {
 
 function hasLeaderboardEnabled() {
   return !partySettings || partySettings.leaderboard !== false;
+}
+
+function getSpeechStatusNode() {
+  return document.getElementById("speechStatus");
+}
+
+function setSpeechStatus(message) {
+  const node = getSpeechStatusNode();
+
+  if (node) {
+    node.innerText = message;
+  }
+}
+
+function getAutoReadEnabled() {
+  return localStorage.getItem(SPEECH_SETTINGS_KEY) === "true";
+}
+
+function setAutoReadEnabled(enabled) {
+  localStorage.setItem(SPEECH_SETTINGS_KEY, String(enabled));
+}
+
+function chooseSpeechVoice() {
+  if (!speechSynthesisSupported) {
+    return null;
+  }
+
+  const voices = window.speechSynthesis.getVoices();
+
+  if (!voices.length) {
+    return null;
+  }
+
+  return (
+    voices.find(voice => /en-in/i.test(`${voice.lang} ${voice.name}`))
+    || voices.find(voice => /^en/i.test(voice.lang))
+    || voices[0]
+  );
+}
+
+function stopSpeech() {
+  if (!speechSynthesisSupported) {
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  setSpeechStatus("Reading stopped.");
+}
+
+function getQuestionSpeechText() {
+  const question = questions[currentQuestion];
+
+  if (!question) {
+    return "";
+  }
+
+  const optionText = question.options
+    .map((option, index) => `Option ${index + 1}. ${option}.`)
+    .join(" ");
+
+  return `Question ${currentQuestion + 1}. ${question.question}. ${optionText}`;
+}
+
+function speakCurrentQuestion(forceStatusMessage) {
+  if (!speechSynthesisSupported) {
+    setSpeechStatus("Read-aloud is not supported in this browser.");
+    return;
+  }
+
+  const text = getQuestionSpeechText();
+
+  if (!text) {
+    setSpeechStatus("Nothing is available to read right now.");
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  selectedSpeechVoice = selectedSpeechVoice || chooseSpeechVoice();
+
+  if (selectedSpeechVoice) {
+    utterance.voice = selectedSpeechVoice;
+    utterance.lang = selectedSpeechVoice.lang;
+  } else {
+    utterance.lang = "en-IN";
+  }
+
+  utterance.rate = 0.95;
+  utterance.pitch = 1;
+  utterance.onstart = () => {
+    setSpeechStatus(forceStatusMessage || "Reading question aloud...");
+  };
+  utterance.onend = () => {
+    setSpeechStatus("Finished reading.");
+  };
+  utterance.onerror = () => {
+    setSpeechStatus("Read-aloud could not play this question.");
+  };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function initializeSpeechControls() {
+  speechSynthesisSupported = typeof window !== "undefined" && "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+  const readButton = document.getElementById("readQuestionButton");
+  const stopButton = document.getElementById("stopSpeechButton");
+  const autoReadToggle = document.getElementById("autoReadToggle");
+  const speechPanel = document.getElementById("speechPanel");
+
+  if (!readButton || !stopButton || !autoReadToggle || !speechPanel) {
+    return;
+  }
+
+  autoReadToggle.checked = getAutoReadEnabled();
+
+  if (!speechSynthesisSupported) {
+    readButton.disabled = true;
+    stopButton.disabled = true;
+    autoReadToggle.disabled = true;
+    setSpeechStatus("This browser does not support Buzz-to-Speech.");
+    return;
+  }
+
+  setSpeechStatus("Buzz-to-Speech is ready.");
+  selectedSpeechVoice = chooseSpeechVoice();
+
+  readButton.addEventListener("click", () => {
+    speakCurrentQuestion("Reading question aloud...");
+  });
+
+  stopButton.addEventListener("click", () => {
+    stopSpeech();
+  });
+
+  autoReadToggle.addEventListener("change", () => {
+    setAutoReadEnabled(autoReadToggle.checked);
+    setSpeechStatus(autoReadToggle.checked ? "Auto-read is on." : "Auto-read is off.");
+  });
+
+  if (typeof window.speechSynthesis.onvoiceschanged !== "undefined") {
+    window.speechSynthesis.onvoiceschanged = () => {
+      selectedSpeechVoice = chooseSpeechVoice();
+    };
+  }
 }
 
 function isEffectEnabled(effectKey) {
@@ -310,6 +458,7 @@ function applyLiveEvent(event) {
     sabotageReceived += 1;
     showOverlay("flashbangOverlay", FLASHBANG_DURATION_MS);
     updatePartyMessage("You were flashbanged by another player.");
+    stopSpeech();
     return;
   }
 
@@ -358,6 +507,7 @@ function loadQuestion() {
   const questionImage = document.getElementById("questionImage");
 
   if (!q) {
+    stopSpeech();
     document.getElementById("question").innerText = "No quiz questions available.";
     document.getElementById("options").innerHTML = "<button onclick=\"window.location.href='dashboard.html'\">Back to Dashboard</button>";
     return;
@@ -400,6 +550,12 @@ function loadQuestion() {
       checkAnswer(Number(button.dataset.displayIndex));
     });
   });
+
+  if (getAutoReadEnabled()) {
+    speakCurrentQuestion("Reading the new question...");
+  } else {
+    setSpeechStatus("Question ready. Tap Read Question to hear it aloud.");
+  }
 }
 
 async function checkAnswer(selectedDisplayIndex) {
@@ -409,6 +565,7 @@ async function checkAnswer(selectedDisplayIndex) {
 
   clearInterval(timerIntervalId);
   clearQuestionEffects();
+  stopSpeech();
   const selectedEntry = currentQuestionOptions[selectedDisplayIndex];
   const selectedOption = selectedEntry ? selectedEntry.option : "";
   const timeMs = Date.now() - questionStartTime;
@@ -504,6 +661,7 @@ function initializeQuiz() {
     updatePartyMessage("Party mode active. Play fast and stay sharp.");
   }
 
+  initializeSpeechControls();
   setupParticipantsListener();
   setupLiveEventsListener();
 

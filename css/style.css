@@ -356,6 +356,52 @@ button:active {
   margin: 0 auto 18px;
 }
 
+.speech-panel {
+  width: min(100%, 520px);
+  margin: 0 auto 18px;
+  padding: 14px 16px;
+  border: 2px solid var(--chrome-border);
+  text-align: left;
+  background: rgba(255, 210, 221, 0.42);
+  box-shadow:
+    inset 1px 1px 0 var(--chrome-highlight),
+    inset -1px -1px 0 #c79a7f;
+}
+
+.speech-panel-title {
+  margin: 0 0 6px;
+  color: var(--deep-sea);
+  font-weight: bold;
+}
+
+.speech-panel-copy {
+  margin: 0 0 10px;
+  font-size: 13px;
+}
+
+.speech-actions {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.speech-actions button {
+  margin: 0;
+}
+
+.speech-toggle {
+  justify-content: flex-start;
+  margin: 12px 0 8px;
+}
+
+.speech-status {
+  min-height: 18px;
+  margin: 0;
+  color: var(--moss-green);
+  font-size: 13px;
+}
+
 .timer-track {
   position: relative;
   height: 48px;
