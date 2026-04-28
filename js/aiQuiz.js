@@ -157,6 +157,10 @@ async function generateQuiz() {
 }
 
 async function extractPdfText(file) {
+  if (typeof pdfjsLib === "undefined") {
+    throw new Error("PDF support could not be loaded. Please refresh the page and try again.");
+  }
+
   if (!file) {
     throw new Error("Please upload a PDF first.");
   }
