@@ -63,14 +63,17 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/legacy/build/pdf.min.js"></script>
   <script src="js/firebase.js"></script>
   <script src="js/session.js"></script>
   <script>
     renderTopbarProfile();
-    if (typeof pdfjsLib !== "undefined") {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/legacy/build/pdf.worker.min.js";
-    }
+  </script>
+  <script type="module">
+    import * as pdfjsLibModule from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.min.mjs";
+
+    window.pdfjsLib = pdfjsLibModule;
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.worker.min.mjs";
   </script>
   <script src="js/aiQuiz.js"></script>
 </body>
