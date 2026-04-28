@@ -87,6 +87,7 @@ async function launchQuizFlow(questions, quizTopicLabel) {
 
     localStorage.setItem("quizCode", code);
     localStorage.setItem("isGroupQuiz", "true");
+    localStorage.setItem("randomizeQuestionOrder", "false");
     localStorage.setItem("isPartyMode", "false");
     localStorage.removeItem("partySettings");
     localStorage.setItem("playerName", localStorage.getItem("currentUserEmail") || "Quiz Host");
@@ -95,6 +96,7 @@ async function launchQuizFlow(questions, quizTopicLabel) {
   } else {
     localStorage.removeItem("quizCode");
     localStorage.setItem("isGroupQuiz", "false");
+    localStorage.setItem("randomizeQuestionOrder", "false");
     localStorage.setItem("isPartyMode", "false");
     localStorage.removeItem("partySettings");
     localStorage.removeItem("participantId");

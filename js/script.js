@@ -37,11 +37,31 @@ function getStoredQuestions() {
   }
 }
 
+function shouldRandomizeQuestionOrder() {
+  return localStorage.getItem("randomizeQuestionOrder") === "true";
+}
+
+function shuffleQuestions(questionList) {
+  const shuffledQuestions = [...questionList];
+
+  for (let index = shuffledQuestions.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [shuffledQuestions[index], shuffledQuestions[swapIndex]] = [
+      shuffledQuestions[swapIndex],
+      shuffledQuestions[index]
+    ];
+  }
+
+  return shuffledQuestions;
+}
+
 function getQuizQuestions() {
   const storedQuestions = getStoredQuestions();
 
   if (Array.isArray(storedQuestions) && storedQuestions.length > 0) {
-    return storedQuestions;
+    return shouldRandomizeQuestionOrder()
+      ? shuffleQuestions(storedQuestions)
+      : storedQuestions;
   }
 
   if (typeof sampleQuestions !== "undefined" && sampleQuestions.length > 0) {

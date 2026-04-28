@@ -228,6 +228,10 @@ function joinQuiz() {
         localStorage.setItem("quizData", JSON.stringify(quiz.questions));
         localStorage.setItem("quizCode", code);
         localStorage.setItem("isGroupQuiz", String(Boolean(quiz.isGroupQuiz)));
+        localStorage.setItem(
+          "randomizeQuestionOrder",
+          String(Boolean(quiz.randomizeQuestionOrder))
+        );
         localStorage.setItem("isPartyMode", String(Boolean(quiz.isPartyMode)));
         localStorage.setItem("partySettings", JSON.stringify(quiz.partySettings || null));
         localStorage.removeItem("score");
