@@ -349,8 +349,21 @@ button:active {
 }
 
 .quiz-stage {
+  font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
   transition: transform 0.25s ease;
   transform-origin: top center;
+}
+
+.quiz-stage #question {
+  font-size: clamp(24px, 4vw, 38px);
+  line-height: 1.22;
+  letter-spacing: 0;
+}
+
+.quiz-stage #options button {
+  font-family: inherit;
+  font-size: 17px;
+  line-height: 1.35;
 }
 
 .party-status {
